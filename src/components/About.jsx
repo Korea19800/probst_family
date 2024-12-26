@@ -1,13 +1,12 @@
-import aboutImg from "../assets/icpc.png";
+{/* bp picture */}
+import aboutImg from "../assets/bp_father.jpg";
 import { ABOUT_TEXT } from "../constants";
-
-// should change about -> award
 
 const About = () => {
   return (
     <div className='border-b border-neutral-900 pb-4'>
-      <h1 className='my-20 text-center text-4xl'>Award 
-        <span className='text-neutral-500'>s</span>
+      <h1 className='my-20 text-center text-4xl'>BP  
+        <span className='text-neutral-500'>a.k.a Brandon Probst</span>
       </h1>
       <div className="flex flex-wrap">
         <div className='w-full lg:w-1/2 lg:p-8'>

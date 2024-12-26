@@ -1,0 +1,3088 @@
+<!DOCTYPE html>
+<!-- saved from url=(0135)https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&problemId=AZMkb42UAAsBAAa4&problemNo=1&goTab=contest# -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>SW Certificate System</title>
+
+<meta name="Referrer" content="origin">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+
+<link rel="stylesheet" type="text/css" href="./SW Certificate System_files/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="./SW Certificate System_files/common-exam.css">
+<link href="./SW Certificate System_files/css" rel="stylesheet">
+<link rel="shortcut icon" type="image/x-icon" href="https://cert.ssafy.com/exam/scsfy_exam_favicon.ico?1">
+
+<script src="./SW Certificate System_files/jquery-3.4.1.js" type="text/javascript"></script>
+<script src="./SW Certificate System_files/bootbox.min.js" type="text/javascript"></script>
+<script src="./SW Certificate System_files/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+history.pushState(null, null, location.href);
+window.onpopstate = function(event) {
+    history.go(1);
+};
+
+function alertNoSession() {
+	bootbox.alert("세션이 만료되었습니다. 로그인 페이지로 이동합니다.", " ","4",null, function() {
+		document.location.href = "/exam/authentication/login/login";
+	});
+}
+
+function alertInfo(msg, longText, callbackFunc) {
+	msg = "<p class='paragraph'>" + msg + "</p>";
+	bootbox.alertInfo(msg, "", "2", longText, callbackFunc);
+}
+
+function alertSuccess(msg, longText, callbackFunc) {
+	msg = "<p class='paragraph'>" + msg + "</p>";
+	bootbox.alertSuccess(msg, "", "3", longText, callbackFunc);
+}
+
+function alertFail(msg, longText, callbackFunc) {
+	msg = "<p class='paragraph'>" + msg + "</p>";
+	bootbox.alertFail(msg, "", "4", longText, callbackFunc);
+}
+
+function alertWarning(msg, longText, callbackFunc) {
+	msg = "<p class='paragraph'>" + msg + "</p>";
+	bootbox.alertWarning(msg, "", "5", longText, callbackFunc);
+}
+
+function getContextPath() {
+	return "/exam";
+}
+
+function getAgreement(type){
+	var params = {};
+	var url = "/exam/common/getAgreementPopup";
+
+	$.ajax(
+	{
+		type : "GET",
+		url : url,
+		data : params,
+		async: false,
+		contentType: 'application/json',
+		dataType:'json',
+		success : function(ret)
+		{
+ 			if(ret != null){
+ 				if(type == "privacy"){
+ 					$("#privacyContents").html(ret.privacyPolicyI18n);
+ 				} else {
+ 					$("#termsOfServiceContents").html(ret.termsOfServiceI18n);
+ 				}
+			}
+		},
+		error : function(request, err, ex)
+		{
+			bootbox.alert(err + " ===> " + ex, " ","4",null, function() {														
+			}); 													
+		}
+	});		
+	if(type == "privacy"){
+		$("#privacy").modal();	
+	} else {
+		$("#termsOfService").modal();
+	}
+}
+
+</script>
+
+<!-- Modal : 이용약관 -->
+</head><body class="exam" id="problemBody" style="display: block;"><div class="modal scs-modal fade" id="termsOfService" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="">이용약관<!-- 이용 약관 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- 이용약관 -->
+				<div class="policy_wrap document" id="termsOfServiceContents">
+
+				</div>
+				<!-- //이용약관 -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal : Privacy -->
+<div class="modal scs-modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="">개인정보처리방침<!-- 개인정보처리방침 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- privacy -->
+				<div class="policy_wrap document" id="privacyContents">
+
+				</div>
+				<!-- //policy -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- loadingbar -->
+<div class="loading" style="display: none;">
+	<div>
+	<img alt="loading" src="./SW Certificate System_files/loading.gif">
+	</div>
+</div>
+<!-- //loadingbar -->
+
+<!-- codemirror -->
+<link rel="stylesheet" href="./SW Certificate System_files/codemirror.css" type="text/css">
+<link rel="stylesheet" href="./SW Certificate System_files/eclipse.css" type="text/css">
+<link rel="stylesheet" href="./SW Certificate System_files/fullscreen.css" type="text/css">
+<link rel="stylesheet" href="./SW Certificate System_files/dialog.css" type="text/css">
+<link rel="stylesheet" href="./SW Certificate System_files/codemirror-ui.css" type="text/css">
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/codemirror.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/matchbrackets.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/active-line.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/clike.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/fullscreen.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/python.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/dialog.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/searchcursor.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/search.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/codemirror-ui.js"></script>
+<script language="Javascript" type="text/javascript" src="./SW Certificate System_files/problemCommCode.js"></script>
+<script type="text/javascript">
+var isEditChange = false;
+var prevSelCodeLang = "";
+var isSubmit=false;
+var init = true;
+var tab1 = "problem";
+var tab2 = "contest";
+
+var cEditor;
+var mainEditor;
+
+$(document).ready(function () {	
+	$(".loading").show();
+	makeLanguageCodeToMap('.langCode');
+	$("#problemBody").css("display", "block");
+	// 문제/문제풀이 Tab관련 event
+	setTabClickEvent();
+	// 우측 상단 ... 이미지(나의 제출 History)클릭 event
+	viewSubmitHistory();
+	// 우측 상단 제출시간 표시
+	displaySubmitTime("Sun, 17 Nov 2024 16:48:04");	
+	// Run/Clear 버튼 조정
+	viewRunClearBtn();
+	$(".loading").hide();
+});
+
+function viewRunClearBtn(){
+	
+}
+
+function contestTabLoad(){
+	var langCd = initCodeLang('C,P,J,Y'); // 선택가능 언어 셋팅
+
+	// 관리자가 문제 등록시 선택 가능언어로 셋팅하고 응시자가 저장한 값이 있으면 그 값을 셋팅.
+	
+		langCd = "P";
+		prevSelCodeLang = langCd;
+	
+
+	var chLang = selectLanguageCodeToLabel(langCd);		
+	cEditor = new CodeMirrorUI(document.getElementById("textSource"),
+			{
+				searchMode : 'popup'
+			},			
+	       {
+		        lineNumbers: true,
+		        styleActiveLine: true,
+		        matchBrackets: true,
+		        smartIndent: true,
+		        indentUnit: 4,
+		        mode: getLangMode(chLang),
+		        theme: "eclipse",
+			    extraKeys: {
+			      "F11": function(cm) {
+			        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			      },
+			      "Esc": function(cm) {
+			        if (cm.getOption("fullScreen")) {
+			        	cm.setOption("fullScreen", false);
+			        }
+			      }
+				}
+	      	});
+		
+		cEditor.on("change", onEditChange);	
+	
+			
+		
+		var tempLang = "";
+		
+		if(prevSelCodeLang == null || prevSelCodeLang == "") {
+			if('false'== true) {
+				if('' == 'P') {
+					changeStyle("cpp");
+				}else if('' == 'J') {
+					changeStyle("java");
+				}else if('' == 'Y') {
+					changeStyle("py");
+				}
+			} else {				
+				var codeLangSet = 'C,P,J,Y';
+				for (var i = 0; i < languageList.length; i++){
+					if (codeLangSet.indexOf(languageList[i].languageCode) != -1) {
+						changeStyle(languageList[i].languageCodeLabel);
+						break;
+					}
+				}
+			}
+			// selectCodeLang버튼 클릭시 팝업에서 취소 버튼 클릭시 이전 코드 radio check하기 위함.
+			prevSelCodeLang = langCd;
+		} else {
+			tempLang = selectLanguageCodeToLabel(prevSelCodeLang);
+			changeStyle(tempLang);
+		}		
+}
+
+function setTabClickEvent(){
+	// 최초 Loading시 문제 Tab 보여주기
+	if($('#goTab').val() == tab2){
+		viewTabProblem(tab2);
+	} else {
+		viewTabProblem(tab1);
+	}
+	
+	$('.tab-wrap ul li').click(function() {
+		var activeTab = $(this).attr('data-tab');
+		$('.tab-wrap ul li').removeClass('on');
+		$('.content-wrap').removeClass('show');
+		$(this).addClass('on');
+		$('#' + activeTab).addClass('show');
+		
+		if(activeTab == "tab2"){
+			$("#goTab").val(tab2);
+			if($("#goTab").val() == tab2 && init){
+				contestTabLoad();
+				init = false;
+			}			
+		}else{
+			$("#goTab").val(tab1);
+		}
+	});
+	
+	$('.sub-tab-wrap ul li').click(function() {
+		var activeTab = $(this).attr('data-tab');
+		$('.sub-tab-wrap ul li').removeClass('on');
+		$('.sub-tab-content textarea').removeClass('show');
+		$('.sub-tab-content ul').removeClass('show');
+		$(this).addClass('on');
+		$('#' + activeTab).addClass('show');
+	});		
+}
+
+function viewSubmitHistory(){
+	$(".submit-history-btn").click(function(){
+		$(".submit-history-layer").toggleClass("show");
+	});
+}
+
+function displaySubmitTime(time){
+	if(time != ""){
+		var submitTime = new Date(time);
+		$("#submitTime").html(displayTime(submitTime));	
+	}
+}
+
+function displayTime(time){
+	var submitTime = new Date(time);
+	var submitTimeText = "";
+	if(submitTime.getHours() < 10){
+		submitTimeText = "0";
+	}
+	submitTimeText += submitTime.getHours()+":";
+	if(submitTime.getMinutes() < 10){
+		submitTimeText += "0";
+	}
+	submitTimeText += submitTime.getMinutes()+":";
+	if(submitTime.getSeconds() < 10){
+		submitTimeText += "0";
+	}
+	submitTimeText += submitTime.getSeconds();
+	
+	return submitTimeText;
+}
+
+function getLangMode(lang)
+{
+    var langMode = selectLanguageLabelToReference(lang);
+	return langMode;
+}
+
+function initCodeLang(codeLang)
+{
+    var langObj = document.getElementsByName("lang");
+
+    var codeLangSet = "";
+    var arrCodeLang = codeLang.split(",");
+
+    /* 관리자가 셋팅한 언어만 disable 을 false 시킨다.
+    
+       18.08.22 수정 
+       - 김현우님 요청 : python 셋팅되지 않으면 응시자에게 python선택을 보여주지 않는다. (다른 언어는 기존대로 disable) 
+    */
+	for(var i = 0; i < langObj.length; i++) {
+		var langVal = langObj[i].value;
+    	if(canUseLanguage(langVal, arrCodeLang)) {
+    		langObj[i].disabled = false;
+	    } else {
+    		if(isPython(langVal)) {
+		    	var pythonSelector = "#langSelector" + langVal;
+		    	$(pythonSelector).remove();
+    		}
+	    }
+    }
+
+    // 관리자 문제 등록시 설정한 문제풀기 언어를 가져온다.
+    var returnValue = "";
+    for (var i = 0; i < languageList.length; i++) {
+    	if (codeLang.indexOf(languageList[i].languageCode) != -1) {
+    		returnValue = languageList[i].languageCode;
+    		break;
+    	}
+    }
+    
+    return returnValue;
+}
+
+function canUseLanguage(langVal, langArr) {
+	return ($.inArray(langVal, langArr) != -1) ? true : false;
+}
+
+function isPython(langVal) {
+	return (langVal == 'Y') ? true : false;
+}
+
+// Default Template 로드
+function probTemplateLoad(codeLangCd)
+{
+    var params =
+    {
+        codeLangCd : codeLangCd,
+        problemId : 'AZMkb42UAAsBAAa4'
+    };
+
+    var url = "/exam/contest/management/probTemplateLoad";
+    $.ajax(
+    {
+        type : "GET",
+        url : url,
+        data : params,
+        async : false,
+        success : function(ret)
+        {
+        	 if(ret.message == "noSession") {
+        	    alertNoSession();
+            	return false;
+            }
+        	 
+            if(codeLangCd == ret.lang) {
+                if(ret.code) {
+                    var code1 = ret.code.split("&lt;").join("<");
+                    var code2 = code1.split("&gt;").join(">");
+       				cEditor.setValue(code2);
+                    isEditChange = false;
+                }
+            }
+        },
+        error : function(request, err, ex)
+        {
+        	alertFail(err + " ===> " + ex, null, function(){});
+        }
+    });
+}
+
+// 편집 스타일 변경
+function changeStyle(lang)
+{
+	cEditor.setOption("mode", getLangMode(lang));
+	
+
+    var langObj = document.getElementsByName("lang");	
+    lang = selectLanguageLabelToCode(lang);
+    for(var i = 0; i < langObj.length; i++)
+    {
+        if(langObj[i].value == lang)
+        {
+            langObj[i].checked = true;
+            break;
+        }
+    }
+    
+    changeElements(lang);
+}
+
+function changeElements(lang) {	
+	$("#webedit").css("visibility", "visible");
+}
+
+// 마지막 소스로드
+function lastLangSourceLoad(codeLangCd)
+{
+	if(codeLangCd == 'P')
+	{
+		$("#mainCode").html("(main.cpp)");
+		$("#userCode").html("(solution.cpp)");
+	}
+	
+	if(codeLangCd == 'J')
+	{
+		$("#mainCode").html("(Solution.java)");
+		$("#userCode").html("(UserSolution.java)");
+	}
+	
+	if(codeLangCd == 'Y')
+	{
+		$("#mainCode").html("(main.py)");
+		$("#userCode").html("(solution.py)");
+	}
+	
+    var params =
+    {
+    	codeLangCd : codeLangCd,
+        contestId : $("#contestId").val(),
+        problemId : 'AZMkb42UAAsBAAa4'
+    };
+	
+    var url = "/exam/contest/management/lastLangSourceLoad";
+    $.ajax(
+    {
+        type : "GET",
+        url : url,
+        data : params,
+        async : false,
+        success : function(ret)
+        {
+        	if (ret.message == "noSession") {
+        		alertNoSession();
+            	return false;
+            }
+        	
+        	var lastSourceInfo = ret.lastSourceInfo;
+            if(lastSourceInfo != null && codeLangCd == lastSourceInfo.codeLangCd)
+            {
+                var lastSource = lastSourceInfo.submitCode.split("&lt;").join("<").split("&gt;").join(">");
+           		cEditor.setValue(lastSource);
+                isEditChange = false;
+                
+                if(ret.mainSource)
+                {
+                	var mainSource = ret.mainSource.split("&lt;").join("<").split("&gt;").join(">");
+            		mainEditor.setValue(mainSource);
+                    isEditChange = false;
+                }
+            }
+        },
+        error : function(request, err, ex)
+        {
+        	alertFail(err + " ===> " + ex, null, function(){});
+        }
+    });
+}
+
+function loadInitCodeLang()
+{
+	var lang;
+	var msg = "정말로 초기화하시겠습니까?\n작성중인 코드가 지워집니다.";
+	
+	bootbox.confirm(msg, "소스 코드 초기화", function(result) {
+		if(result){
+			
+	        var langObj = document.getElementsByName("lang");
+	        
+	        for(var i = 0; i < langObj.length; i++)
+	        {
+	            if(langObj[i].checked == true)
+	            {
+	                lang = langObj[i].value;
+	            }
+	        }
+
+		    var chLang = selectLanguageCodeToLabel(lang);
+
+		    changeStyle(chLang);
+	        probTemplateLoad(lang);
+		}
+	}); 
+
+}
+
+function selectCodeLang(lang)
+{
+   	var isShowConfirm = true;
+   	var msg = "언어 변경 시 작성 중인 코드가 지워집니다.\n변경하시겠습니까?";
+   	
+   	if(prevSelCodeLang == lang) {
+   		isShowConfirm = false;
+   	} else {
+   		if(prevSelCodeLang == "A") {
+   			if(lang != "A")
+   				isShowConfirm = false;	
+   		} else {
+   			isShowConfirm = true;
+   		}
+   	}
+    	
+    //prevSelCodeLang = lang;			    
+	var chLang = selectLanguageCodeToLabel(lang);
+    	
+   	if(isShowConfirm) {
+		bootbox.confirm(msg, "Language", function(result) {
+			if(result){
+				prevSelCodeLang = lang;
+				changeStyle(chLang);	 				    
+		    	lastLangSourceLoad(lang);			
+			} else {
+				if(prevSelCodeLang == "C" || prevSelCodeLang == "P" || prevSelCodeLang == "J" || prevSelCodeLang == "Y"){
+					$("input:radio[name=lang][value=" + prevSelCodeLang + "]").prop("checked", true);	
+				}
+			}
+		});
+   	} else {				
+		changeStyle(chLang);				   
+		lastLangSourceLoad(lang); 				    	
+   	}
+}
+
+// 편집창 변경
+function onEditChange()
+{
+	isEditChange = true;
+}
+
+// input & output text 초기화
+function onReset(){
+	if($("#inputTab").hasClass("on")){
+		$('#input').val('');	
+	} else {
+// 		$('#output').val('');
+		$('#output').html('');
+	}
+}
+
+// output text 초기화
+function onOutputReset(){
+	$('#output').html('');
+} 	
+
+// 문제목록화면 이동
+function goContest()
+{	
+    if(isEditChange)
+    {
+		bootbox.confirm("변경된 문서를 저장하지 않고 이동 하시겠습니까?", "문제 리스트 화면으로 복귀", function(result) {
+			if(result){ 
+				$(".loading").show();
+				document.MainForm.action = "/exam/contest/management/contest";
+		        document.MainForm.submit();
+			 }
+		});	
+		return false;
+    }else{
+    	$(".loading").show();
+    	document.MainForm.action = "/exam/contest/management/contest";
+        document.MainForm.submit();
+	}
+}
+
+function viewCode(index, historyId){
+	$('#submitStatusForCodeView').removeClass();
+	if(typeof index == "undefined"){
+		$('#submitStatusForCodeView').html($('#submitStatus').text());
+		$('#submitTimeForCodeView').html($('#submitTime').text());
+		// last submit code view
+		$('#historyCodeDiv').hide();
+		$('#lastCodeDiv').show();
+		// 제출 상태 색상 표시
+		if($('#submitStatus').children().hasClass("color-red")){
+			$('#submitStatusForCodeView').addClass("color-red");
+		} else if($('#submitStatus').children().hasClass("color-green")){
+			$('#submitStatusForCodeView').addClass("color-green");
+		} else {
+			$('#submitStatusForCodeView').addClass("color-dark");
+		}
+	} else {
+		$('#submitStatusForCodeView').html($('#submitStatus'+index).text());
+		$('#submitTimeForCodeView').html($('#submitTime'+index).text());
+		// history submit code view
+		viewMySubmitCode(historyId);		
+		$('#lastCodeDiv').hide();
+		$('#historyCodeDiv').show();
+
+		// 제출 상태 색상 표시
+		if($('#submitStatus'+index).children().hasClass("color-red")){
+			$('#submitStatusForCodeView').addClass("color-red");
+		} else if($('#submitStatus'+index).children().hasClass("color-green")){
+			$('#submitStatusForCodeView').addClass("color-green");
+		} else {
+			$('#submitStatusForCodeView').addClass("color-dark");
+		}
+	}
+
+	$('#codeView').modal();
+}
+
+function viewSampleInput(){
+	
+    var params =
+    {
+        problemId : 'AZMkb42UAAsBAAa4'
+    };
+	
+    var url = "/exam/contest/management/getSampleInput";
+    $.ajax(
+    {
+        type : "GET",
+        url : url,
+        data : params,
+        async : false,
+        success : function(ret)
+        {
+	        if(ret.sampleInput != null){
+	            $("#sampleInputView").html(ret.sampleInput);
+	        }
+        },
+        error : function(request, err, ex)
+        {
+        	alertFail(err + " ===> " + ex, null, function(){});
+        }
+    });	
+	
+	$('#sampleInput').modal();
+}
+
+// My Submit History 조회
+function getMySubmitHistory()
+{
+	if($('.submit-history-layer').hasClass('show')) return false;
+	
+	var params = {contestId : 'AZMz8B-ECiIBAAZN'
+				  , problemId : 'AZMkb42UAAsBAAa4' };
+	var url = "/exam/contest/management/getMySubmitHistory";
+
+	$.ajax(
+	{
+		type : "GET",
+		url : url,
+		data : params,
+		async: false,
+		contentType: 'application/json',
+		dataType:'json',
+		success : function(ret)
+		{
+ 			if(ret.length != 0){
+		    	var row = "";
+				$(ret).each(function(index, data) {
+					row += rowItem(index, data);
+					
+				});
+				
+				$("#mySubmitHistoryList").html(row);
+			}
+		},
+		error : function(request, err, ex)
+		{
+			alertFail(err + " ===> " + ex, null, function(){});
+		}
+	});		
+	
+}	
+
+function rowItem(index, obj){
+	var rowStr = '<tr>';
+		rowStr += '		<td id="submitTime'+index+'">'+displayTime(obj.submitTime)+'</td>';
+		rowStr += '		<td><a href="#" class="btn-text" onClick="viewCode('+index+',\''+obj.contestHistoryId+'\');">제출코드</a></td>';
+		rowStr += '		<td id="submitStatus'+index+'">';
+		if(obj.solveStatusCd == "P"){
+			rowStr += '<span class="color-green">';
+			if("SFY" == "ITM" || "SFY" == "ADV"){
+				rowStr += 'PASS';
+			} else {
+				rowStr += 'ACCEPT';
+			}
+			rowStr += '</span>';
+		}
+		if(obj.solveStatusCd == "R"){
+			rowStr += '<span class="color-red">Fail (Runtime error)</span>';
+		}
+		if(obj.solveStatusCd == "L"){
+			rowStr += '<span class="color-red">Fail (제한시간 초과)</span>';
+		}
+		if(obj.solveStatusCd == "F"){
+			rowStr += '<span class="color-red">Fail<br/>(오답)</span>';
+		}
+		if(obj.solveStatusCd == "C"){
+			rowStr += '<span class="color-red">Fail (Compile error)</span>';
+		}
+		
+		rowStr += '		</td>';
+		rowStr += '</tr>';
+        
+	return rowStr;     
+};	
+
+function focusRun(){
+	viewTabProblem(tab2);
+
+	$("#examDiv").scrollTop($(document).height()+400);
+}
+
+function viewTabProblem(tab){
+	if(tab == tab2){
+		$("li[data-tab=tab1]").removeClass("on");
+		$("li[data-tab=tab2]").addClass("on");
+		$("#tab1").removeClass("show");
+		$("#tab2").addClass("show");	
+	} else {
+		$("li[data-tab=tab1]").addClass("on");
+		$("li[data-tab=tab2]").removeClass("on");
+		$("#tab1").addClass("show");
+		$("#tab2").removeClass("show");		
+	}
+	$("#goTab").val(tab);
+	if($("#goTab").val() == tab2 && init){
+		contestTabLoad();
+		init = false;
+	}		
+}
+
+function executeSave(){
+	viewTabProblem(tab2);
+
+	var lang = "";
+	var langObj = document.getElementsByName("lang");    
+    for(var i = 0; i < langObj.length; i++){
+        if(langObj[i].checked == true){
+            lang = langObj[i].value;
+        }
+    }
+    
+    var value = cEditor.getValue();
+    var buttonName = "임시저장";    
+  
+    if(value == ""){
+    	alertWarning("입력하신 소스코드가 없습니다.", null, function(){});
+        return false;
+    }
+    
+    if(calculateMsgLen(value) > 131072){
+    	alertWarning("소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.", null, function(){});
+		return false;
+	}
+    
+    var langType = selectLanguageCodeToLabel(lang);
+    var contestId = 'AZMz8B-ECiIBAAZN';
+    var problemId = 'AZMkb42UAAsBAAa4';
+    var examineeId = 'EXAMN0078913';
+    var contestTypeCd = 'SFY';
+    
+    var params = {
+        source : value,
+        langType : langType,	            
+        contestId : contestId,
+        problemId : problemId,
+        contestTypeCd : contestTypeCd,
+        examineeId : examineeId
+    };
+    
+    $.ajax({
+        type : "POST",
+        url : "/exam/execute/management/save",
+        data : JSON.stringify(params),
+        dataType : 'json',
+        contentType : "application/json; charset=utf-8",
+        beforeSend : function(){
+        	$(".loading").show();	
+		},
+		complete : function(){
+			$(".loading").hide();
+		},
+        success : function(json){
+        	if(json.message == "noSession"){
+        		alertNoSession();
+        		return false;
+        	}
+        	      
+        	if(json.result == "success"){
+        		 isEditChange = false;
+	             alertSuccess("저장되었습니다.", null, function(){});
+	             return false;
+        	}
+        
+        	alertFail("Server Error", null, function(){});
+        	return false;
+        },
+        error : function(request, err, ex){
+        	alertFail("Server Error", null, function(){});
+        }
+    });    
+    return false;
+    
+}
+
+function executeTest(){	
+	viewTabProblem(tab2);
+
+	$('#outputTab').addClass('on');
+	$('#output').addClass('show');
+	
+	$('#inputTab').removeClass('on');	
+	$('#input').removeClass('show');	
+	
+	var contestId = 'AZMz8B-ECiIBAAZN';
+	var problemId = 'AZMkb42UAAsBAAa4';
+	var value = cEditor.getValue();
+	var contestTypeCd = 'SFY';
+	var examineeId = 'EXAMN0078913';
+	var isTest = true;
+	var inputData = $('#input').val();
+	var isUseMain = 'false';
+	var rv = -1; // Return value assumes failure. 	
+	
+	if(isInvalidTestData(value)){
+		return false;
+	}
+	
+	var lang = "";
+	var langObj = document.getElementsByName("lang");    
+    for(var i = 0; i < langObj.length; i++){
+        if(langObj[i].checked == true){
+            lang = langObj[i].value;
+        }
+    }
+    var langType = selectLanguageCodeToLabel(lang);
+    
+    var params ={
+    	source : value,
+    	langType : langType,
+    	contestId : contestId,
+    	contestTypeCd : contestTypeCd,
+    	problemId : problemId,
+    	test : isTest,
+    	inputData : inputData,
+    	examineeId : examineeId,
+    	useMain : isUseMain
+   	};
+    
+    $.ajax({
+        type : "POST",
+        url : "/exam/execute/management/test",
+        data : JSON.stringify(params),
+        dataType : 'json',
+        contentType : "application/json; charset=utf-8",
+        beforeSend : function(){
+        	$(".loading").show();	
+		},
+		complete : function(){
+			$(".loading").hide();
+		},
+        success : function(json){
+        	if(json.message == "noSession"){
+        		alertNoSession();
+        		return false;
+        	}
+        	
+        	// default test input 사용
+        	if(json.testInput == "Y"){
+        		addCompileMsg("Input data가 없으므로 Sample input으로 테스트됩니다.",json.compileTime,"W");
+        	}
+        	        	
+        	if(json.result != "success"){        		
+        		alertFail("Server Error", null, function(){});
+              	return false;
+        	} 
+        	
+        	//submit 불가능한 경우
+			if(json.submitFailed != "" && json.submitFailed != null){
+				testResultFailed(json);
+				return false;
+			}
+        	
+       		// 정상 종료 : exitValue = 0
+       		if(json.vo.exitValue == "0"){
+       			addCompileMsg("성공적으로 컴파일 되었습니다.",json.compileTime,"S"); 	  				            	
+				addCompileMsg("실행을 시작합니다.",json.compileTime,"S");	            
+				
+				//확인 후 삭제
+				if(json.cutInput == "Y"){
+					addCompileMsg("Input size는 " + json.inputSize +" byte 이하로 제한되었습니다.", json.compileTime,"W");
+            	    addCompileMsg("참고로 INPUT 값을 넣지 않으면 제공되는 Sample Input이 기본 INPUT으로 설정되어 실행됩니다.", json.compileTime, "W");
+             		return false;
+             	}							
+				
+				// run error
+				if(json.vo.runError != ""){
+					testResultRunError(json);
+					return false;
+				}
+				
+				// timout 
+				if(json.vo.runValue != "" || json.vo.timeOut != ""){
+					testResultTimeout(json);
+					return false;
+				}
+				
+				// 실행결과 출력
+				if(json.vo.examineeResult != "" && json.vo.examineeResult != null) {
+					if(json.vo.cutOutput == true){
+						addCompileMsg("Output size는 " + json.vo.maxOutputSize +" byte 이내로 제한되어 출력되었습니다.", json.compileTime, "W");
+					}
+					
+					addCompileMsg(json.vo.examineeResult, json.compileTime, "P"); 	  			            	    	 	  			            	    	
+            	    addCompileMsg("실행이 완료되었습니다. 실행 시간 : "+ json.vo.executionTime+"s" , json.compileTime,"S");
+            	    return false;
+				}
+				
+				// 실행결과 없음
+				addCompileMsg("There is no output" , json.compileTime,"W");
+				return false;
+       		}
+       		
+       		// 비정상 종료 : exitValue != 0
+       		testResult(json.vo.exitValue, json);
+       		return false; 
+        	
+        	
+        	addCompileMsg("Server Error", json.compileTime, "E"); 	
+        	return false;        	        	  	        	        	     
+        },
+        error : function(request, err, ex){
+        	alertFail("Server Error", null, function(){});
+        }
+    });    
+    return false;   
+}
+
+function testResult(exitValue, json){
+	var msg = "";
+	switch(exitValue) {
+		case "EB" : // EXCEED_BYTE
+			msg = "소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.";
+			break;
+	
+		case "NK" :	// NOT_ALLOWED_KEYWORD
+			msg = "허용되지 않은 키워드가 사용되어 제출이 제한되었습니다.<br/>아래 이름의 키워드를 확인바랍니다.<br/><br/> > " + json.vo.cmpError;
+			break;
+			
+		case "FI" :	// FILE_IO
+			msg = "파일 입력 메소드가 사용되었습니다. <br/> > " + json.vo.cmpError+"<br/>(제출 코드에는 표준 입출력만 사용해야 합니다.)";
+			break;
+			
+		case "NS" :	// NON_STANDARD_FUNCTION
+			msg = "표준라이브러리와 동일한 이름의 함수(메소드)가 사용되어 제출이 제한되었습니다.<br/>아래 이름의 함수(메소드)를 확인바랍니다.<br/><br/> >" + json.vo.cmpError;
+			break;
+		
+		case "SC" :	// SYSTEM_CALL
+			msg = "System call 함수는 사용할 수 없습니다. <br/> > " + json.vo.cmpError;
+			break;
+		
+		case "UP" :	// USE_PACKAGE
+			msg = "다음 라인에서 package가 선언되었습니다. <br/> > " + json.vo.cmpError + "<br/>(제출 코드에는 package 예약어를 사용하면 안됩니다.)";
+			break;
+			
+		case "RE" :	// RESOURCE_ACCESS_EXCEPTION
+			//msg = 문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.
+			msg = "문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.";
+			break;
+		
+		default : 
+			msg = "컴파일 오류 : <br/>오류 메세지 : <br/>" + json.vo.cmpError;
+			break;
+	}
+	
+	addCompileMsg(msg, json.compileTime, "E");	
+}
+
+function testResultFailed(json){
+	var msg = "";
+	var type = "E";
+    
+    switch(json.submitFailed) {
+    	case "EI" : // EXCEED_INPUT_DATA_SIZE
+    		msg = "TEST 기능에서는 1MB 이상의 입력에 대해 테스트가 불가합니다<br/>※ sample_input.txt 이 1MB 이상인 경우 테스트 불가";
+    		type = "W";
+    		break;
+    
+		case "ES" :	// EXCEED_SUBMIT
+			msg = "제출 횟수를 다 채웠습니다.";
+			break;
+			
+		case "TU" :	// TIMES_UP
+			msg = "시간이 종료되었습니다.";
+			break;
+			
+		case "AP" :	// ALREADY_PASSED
+			msg = "이미 통과하였습니다.";
+			break;
+		
+		default : 
+			break;
+	}
+    
+    addCompileMsg(msg, json.compileTime, type);
+}
+
+function testResultRunError(json){
+	if(json.vo.runError.indexOf("Memory Limit Exceeded") != -1 ){		
+		if(json.vo.cutOutput == true){
+			addCompileMsg("Output size는 " + json.vo.maxOutputSize +" byte 이내로 제한되어 출력되었습니다.",json.compileTime,"W");
+		}
+		
+		if(json.vo.examineeResult != null){
+           	addCompileMsg(json.vo.examineeResult,json.compileTime,"P");
+        }
+		addCompileMsg("오류로 인한 실행 중지(메모리 초과오류 발생일 가능성 높음).", json.compileTime,"E");
+		// 오류로 인한 실행 중지(메모리 초과오류 발생일 가능성 높음).
+		return false;
+	}
+	
+	// output size가 커서 제한되어 출력되었는지 판단
+	if(json.vo.cutOutput == true){
+		addCompileMsg("Output size는 " + json.vo.maxOutputSize +" byte 이내로 제한되어 출력되었습니다.", json.compileTime,"W");	
+	}
+   	
+   	if(json.vo.examineeResult != null){
+       	addCompileMsg(json.vo.examineeResult, json.compileTime, "P");
+	}
+   	addCompileMsg("(Runtime error)<br/>Error Message:<br/>" + json.vo.runError, json.compileTime, "E");
+   	return false;
+}
+
+function testResultTimeout(json){
+	if(json.vo.timeOut != ""){
+		if(json.vo.runValue.indexOf("Fail") != -1 && (json.vo.examineeScore == "0" || json.vo.examineeScore == "" || json.vo.examineeScore == "0.0")){
+			if(json.vo.cutOutput == true){
+				addCompileMsg("Output size는 " + json.vo.maxOutputSize +" byte 이내로 제한되어 출력되었습니다.", json.compileTime, "W");
+			}
+			
+			if(json.vo.examineeResult != null){
+				addCompileMsg(json.vo.examineeResult, json.compileTime, "P");
+			}
+			addCompileMsg("(제한시간 초과)", json.compileTime, "E"); 	  			            	    		
+	    	return false;
+		}
+		
+		if(json.vo.cutOutput == true){
+			addCompileMsg("Output size는 " + json.vo.maxOutputSize +" byte 이내로 제한되어 출력되었습니다.", json.compileTime,"W");
+		}
+		
+		if(json.vo.examineeResult != null){
+           	addCompileMsg(json.vo.examineeResult, json.compileTime, "P");
+        }
+   		addCompileMsg("제한시간 초과", json.compileTime, "E");
+   		return false;
+	}
+	
+	if(json.vo.runValue.indexOf("Fail") != -1) {
+		addCompileMsg(null, json.compileTime, "E");
+	}
+}
+
+function isInvalidTestData(value){
+	// 입력하신 소스코드가 없습니다.
+	if(value == ""){		
+		addCompileMsg("입력하신 소스코드가 없습니다.", null, "E");
+        return true;
+	}
+	
+	// 소스코드가 128KB를 초과하였습니다. 128KB 내로 소스코드를 작성하세요.
+	if(calculateMsgLen(value) > 131072){		
+		addCompileMsg("소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.", null, "E"); 
+	    return true;
+	}	
+	
+	// Input Data가 1MB를 초과하였습니다. 1MB 내로 작성하세요.
+	if(calculateMsgLen(value) > 1048576){
+		addCompileMsg("Input data가 1MB를 초과하였습니다.<br/> 1MB 내로 Input data를 작성하세요.", null, "E");
+	    return true;
+	}
+	return false;
+}
+
+Date.prototype.format = function(f) {
+	var d = this;
+	var hh = d.getHours().zf(2);
+	var mm = d.getMinutes().zf(2);
+	var ss = d.getSeconds().zf(2);
+	
+	return hh + ":" + mm + ":" + ss;
+};
+	 
+String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
+String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
+Number.prototype.zf = function(len){return this.toString().zf(len);};
+
+function addCompileMsg(msg,compileTime,type){
+    var html="";
+    
+    if(type=="S"){
+        html+= "<li class=\"message\"><span class=\"message_ico\">";                        
+    }else if(type=="E"){
+        html+= "<li class=\"error_msg\"><span class=\"error_ico\">";
+    }else if(type=="W"){
+        html+= "<li class=\"warning_msg\"><span class=\"warning_ico\">";
+    }else if(type=="P"){
+        html+= "<li class=\"print_msg\"><span class=\"print_ico\">";
+    }
+    
+    if(compileTime!=null){
+        var time = new Date(compileTime);        
+        time.setSeconds(time.getSeconds(), null);
+        html+=time.format();
+    }else{
+        html+=new Date().format();
+    }
+    html+="</span><span class=\"text\"> " + msg + " </span></li>";
+    $('#output').prepend(html);
+    $('#output').scrollTop(0);
+}
+
+function executeCompile(){
+	viewTabProblem(tab2);
+	
+	var lang = "";
+	var langObj = document.getElementsByName("lang");    
+    for(var i = 0; i < langObj.length; i++){
+        if(langObj[i].checked == true){
+            lang = langObj[i].value;
+        }
+    }
+    
+    var value = cEditor.getValue();
+    var buttonName = "컴파일";    
+   
+    if(value == ""){
+    	alertWarning("입력하신 소스코드가 없습니다.", null, function(){});
+        return false;
+    }
+    
+    if(calculateMsgLen(value) > 131072){
+    	alertWarning("소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.", null, function(){});
+		return false;
+	}
+    
+    var langType = selectLanguageCodeToLabel(lang);
+    var contestId = 'AZMz8B-ECiIBAAZN';
+    var problemId = 'AZMkb42UAAsBAAa4';    
+    var examineeId = 'EXAMN0078913';
+    var isUseMain = 'false';
+    var contestTypeCd = 'SFY';
+    
+    var params = {
+        source : value,
+        langType : langType,	            
+        contestId : contestId,
+        problemId : problemId,
+        contestTypeCd : contestTypeCd,
+        examineeId : examineeId,
+        useMain : isUseMain
+    };
+    
+    $.ajax({
+        type : "POST",
+        url : "/exam/execute/management/compile",
+        data : JSON.stringify(params),
+        dataType : 'json',
+        contentType : "application/json; charset=utf-8",
+        beforeSend : function(){
+        	$(".loading").show();	
+		},
+		complete : function(){
+			$(".loading").hide();
+		},
+        success : function(json){
+        	if(json.message == "noSession"){
+        		alertNoSession();
+        		return false;
+        	}
+        	
+        	var vo = json.vo;
+        	if(json.result != "success"){
+        		alertFail("Server Error", null, function(){});
+        		return false;
+        	}
+        	
+        	if(vo.exitValue == "0"){
+        		alertSuccess("성공적으로 컴파일 되었습니다.", null, function(){});
+        	}else{
+        		compileResult(vo.exitValue, buttonName, vo);
+        	}        	  	        	        	     
+        },
+        error : function(request, err, ex){
+        	alertFail("Server Error", null, function(){});
+        }
+    });    
+    return false;
+}
+
+function calculateMsgLen(msg){
+    var nbytes = 0;    
+    for (var i=0; i < msg.length; i++) {     	
+    	var ch = msg.charAt(i);    	
+     	if(escape(ch).length > 4) {
+        	nbytes += 2;
+     	} else if (ch == '\n') {
+      		if (msg.charAt(i-1) != '\r') {
+       			nbytes += 1;
+     		}
+     	} else {
+     		nbytes += 1;
+     	}
+    }    
+    return nbytes;
+}
+
+function executeSubmitFirstStep(){
+	viewTabProblem(tab2);
+
+	var lang = "";
+	var langObj = document.getElementsByName("lang");    
+    for(var i = 0; i < langObj.length; i++){
+        if(langObj[i].checked == true){
+            lang = langObj[i].value;
+        }
+    }
+    
+    var value = cEditor.getValue();
+    var buttonName = "제출";
+    
+    if(value == ""){
+    	alertWarning("입력하신 소스코드가 없습니다.", null, function(){});
+        return false;
+    }
+    
+    if(calculateMsgLen(value) > 131072){
+    	alertWarning("소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.", null, function(){});
+		return false;
+	}
+    
+    var langType = selectLanguageCodeToLabel(lang);
+    var contestId = 'AZMz8B-ECiIBAAZN';
+    var problemId = 'AZMkb42UAAsBAAa4';
+    var examineeId = 'EXAMN0078913';
+    var contestTypeCd = 'SFY';
+    var isUseMain = 'false';
+    
+    var params = {
+        source : value,
+        langType : langType,	            
+        contestId : contestId,
+        problemId : problemId,
+        contestTypeCd : contestTypeCd,
+        examineeId : examineeId,
+        useMain : isUseMain
+    };
+    
+    $.ajax({
+        type : "POST",
+        url : "/exam/execute/management/compile",
+        data : JSON.stringify(params),
+        dataType : 'json',
+        contentType : "application/json; charset=utf-8",
+        beforeSend : function(){
+        	$(".loading").show();	
+		},
+		complete : function(){
+			$(".loading").hide();
+		},
+        success : function(json){
+        	if(json.message == "noSession"){
+        		alertNoSession();
+        		return false;
+        	}
+        	
+        	var vo = json.vo;
+        	if(json.result != "success"){
+        		alertFail("Server Error", null, function(){});
+        		return false;
+        	}     
+        	
+        	if(vo.exitValue == "0"){
+        		executeSubmitSecondStep(params);
+        	}else{
+        		compileResult(vo.exitValue, buttonName, vo);
+        	}
+        },
+        error : function(request, err, ex){
+        	alertFail("Server Error", null, function(){});
+        }
+    });    
+    return false;    
+}
+
+function executeSubmitSecondStep(params){
+	var buttonName = "제출";
+	var limitSubmit = '-1';
+	var msg = "제출 가능 횟수가 1회 감소합니다.\n정말로 제출하시겠습니까?";
+	if('SFY' == 'EXP'){
+		msg += "\n\n※ 정상적으로 문제에서 요구하는 함수를 구현하지 않고,";
+		msg += "\nfake code를 제출하는 경우 코드 리뷰를 통해 실격 처리됩니다.";
+		msg += "\n예) data를 static 메모리에 저장 후 반환하는 코드 등";
+	}	
+	
+	bootbox.confirm(msg, "제출", function(result) {
+		setTimeout("",500);
+		if(!result || isSubmit){
+			isSubmit=false;
+			return;
+		}
+		
+		isSubmit=true;
+		$("#bottom-button-group").hide();		
+		$.ajax({
+	        type : "POST",
+	        url : "/exam/execute/management/submit",
+	        data : JSON.stringify(params),
+	        dataType : 'json',
+	        contentType : "application/json; charset=utf-8",
+	        beforeSend : function(){
+	        	$(".loading").show();
+	        	$("#submitBtn").removeAttr("onclick");
+			},
+			complete : function(){
+				$(".loading").hide();
+				$("#submitBtn").attr("onclick","executeSubmitFirstStep();");
+			},
+	        success : function(json){
+	        	if(json.message == "noSession"){
+	        		alertNoSession();
+	        		return false;
+	        	}
+	        	
+	        	if (json.vo.exitValue == "RE") {
+					// 문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.
+					alertFail("문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.", null, function(){
+                  		isSubmit=false;
+                  	});
+                  	return false;
+				}
+	        	
+	        	$("#bottom-button-group").show();
+	        	if(json.result != "success"){	        		
+                  	alertFail("Server Error", null, function(){
+                  		isSubmit=false;
+                  	});
+                  	return false;
+	        	}
+	        	
+	        	submitResult(json);
+	        },
+	        error : function(request, err, ex){
+	        	alertFail("Server Error", null, function(){});
+	        }
+	    }); 
+	});
+}
+
+function compileResult(exitValue, buttonName, vo){
+	if(exitValue == "0") {	// SUCCESS
+		alertSuccess("성공적으로 컴파일 되었습니다.", null, function(){});
+	} 
+	else if (exitValue == "EB") {	// EXCEED_BYTE
+		alertWarning("소스코드가 128KB를 초과하였습니다.<br/>128KB 내로 소스코드를 작성하세요.", null, function(){});
+	} 
+	else {
+		var msg = "컴파일 오류";
+		var longText = null;
+		switch(exitValue) {
+			case "NK": // NOT_ALLOWED_KEYWORD
+				longText = "허용되지 않은 키워드가 사용되어 제출이 제한되었습니다.<br/>" + "아래 이름의 키워드를 확인바랍니다.<br/><br/> > " + vo.cmpError;
+				break;
+				
+			case "FI": // FILE_IO
+				longText = "파일 입력 메소드가 사용되었습니다. \n> " + vo.cmpError+"\n(제출 코드에는 표준 입출력만 사용해야 합니다.)";
+				break;
+				
+			case "NS": // NON_STANDARD_FUNCTION 
+				var contestTypeCd = 'SFY';
+				longText = "표준라이브러리와 동일한 이름의 함수(메소드)가 사용되어 제출이 제한되었습니다.<br/>" + "아래 이름의 함수(메소드)를 확인바랍니다.<br/><br/> > " + vo.cmpError;
+				break;
+				
+			case "SC": // SYSTEM_CALL
+				longText = "System call 함수는 사용할 수 없습니다. \n> " + vo.cmpError;
+				break;
+			
+			case "UP": // USE_PACKAGE
+				longText = "다음 라인에서 package가 선언되었습니다. \n> " + vo.cmpError+"\n(제출 코드에는 package 예약어를 사용하면 안됩니다.)";
+				break;
+				
+			case "US": // USE_STDIO
+				longText = "허용되지 않은 키워드가 사용되어 제출이 제한되었습니다. \n> " + vo.cmpError;
+				break;		
+				
+			case "RE" :	// RESOURCE_ACCESS_EXCEPTION
+				//longText = 문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.
+				longText = "문제풀이서버와 통신이 되지 않습니다. 관리자에게 문의 하십시오.";
+				break;
+			
+			default : 
+				longText = "컴파일 오류 : \n오류 메세지 : \n" + vo.cmpError;
+				break;
+		}
+		alertFail("컴파일 오류", longText, function(){});
+	}
+	
+	
+	
+}
+
+function submitResult(json){
+	var vo = json.vo;
+	
+	var failString = "Fail";
+	if('SFY' == 'ITM' || 'SFY' == 'ADV'){
+    	failString = "채점용 input 파일로 채점한 결과 fail 입니다.<br><br>";
+    } else if('SFY' == 'FT' || 'SFY' == 'SFY'){
+    	failString = "실패<br><br>";    	    	
+    } else {
+    	failString = "Sample input 파일로 채점한 결과 fail 입니다.<br><br>";
+    }
+	
+	// submit failed
+	if(json.submitFailed != null && json.submitFailed != ""){
+		submitResultFailed(json.submitFailed);
+		return false;
+	}	
+	
+	// 오답, Error
+	if(vo.runError != "" && vo.runError != null && (vo.examineeScore == "0" || vo.examineeScore == "" || vo.examineeScore == "0.0" || vo.examineeScore == "0.00" || vo.examineeScore <= 0)){
+		submitResultWrongAnswer(vo, failString);
+		return false;
+	}	 
+	
+	// 정상 실행, Error
+	if(vo.runValue != "" && vo.runValue != null){
+		// timout
+		if(vo.timeOut != "" && vo.runValue.indexOf("Fail") != -1 && (vo.examineeScore == "0" || vo.examineeScore == "" || vo.examineeScore == "0.0" || vo.examineeScore == "0.00" || vo.examineeScore <= 0)){
+			submitResultWrongAnswer(vo, failString);
+			return false;
+		}
+		
+		// accept
+		if(vo.solveStatusCd == "P"){
+			// ITM, ADV
+			if('SFY' == 'ITM' || 'SFY' == 'ADV'){
+				alertSuccess("축하합니다. Pass입니다.", null, function() {
+            		goContestAfterSubmit();				
+				});
+				return false;
+			}					
+			
+			// PFC, EXP, FT
+			submitResultSuccess(vo);
+			return false;
+		}
+		
+		// 그 외
+		submitResultWrongAnswer(vo, failString);
+		return false;
+	}	
+}
+
+//submit failed
+function submitResultFailed(submitFailed){
+	var msg = "제출이 불가능합니다. <br>";
+
+	switch(submitFailed) {
+		case "ES" :	// EXCEED_SUBMIT
+			msg += "제출 횟수를 다 채웠습니다.";
+			break;
+			
+		case "TU" :	// TIMES_UP
+			msg += "시간이 종료되었습니다.";
+			break;
+			
+		case "AP" :	// ALREADY_PASSED
+			msg += "이미 통과하였습니다.";
+			break;
+		
+		default : 
+			break;
+	}
+	
+	// alertWarning(msg, longText, callbackFunc
+	alertWarning(msg, null, function(result) {
+    	goContestAfterSubmit();
+	});
+    return false;
+}
+
+//wrong answer
+function submitResultWrongAnswer(vo, failString){
+	
+    if('SFY' == 'FT' || 'SFY' == 'SFY'){
+    	failString = "";
+    	if(vo.examineeScore == "0" || vo.examineeScore == "" || vo.examineeScore == "0.0" || vo.examineeScore == "0.00" || vo.examineeScore <= 0){
+    		failString = "주어진 Sample Input에 대해 맞는것이 없습니다.";	
+    	}    	    
+    }else{
+    	var examineeScore = comma(vo.examineeScore);
+    	if(examineeScore == "" || examineeScore == null){
+    		examineeScore = "0";
+    	}
+    	
+    	if(vo.testCaseNo != null && vo.testCaseNo != "0" && vo.testCaseNo != ""){
+    		failString += "<br>(오답";
+    		failString += " :  "+ vo.testCaseNo + "개의 테스트케이스 중 " + vo.correctedCases +"개가 맞았습니다.)";
+    	}else{
+    		failString += "Result : "+ examineeScore;
+    	}
+    	
+    	failString += "<br><br>";
+    }
+		
+	if(vo.timeOut != "" && vo.timeOut != null) {
+		failString += "제한시간 초과가 발생하였습니다. 제한시간 초과로 전체 혹은 일부 테스트 케이스는 채점이 되지 않을 수 있습니다.<br>";
+	} else if (vo.runError != "" && vo.runError != null) {
+		failString += "런타임 에러가 발생하였습니다. 런타임 에러로 전체 혹은 일부 테스트 케이스는 채점이 되지 않을 수 있습니다. <br>";
+		failString += "Error Message :<br>";
+		failString += vo.runError.substring(0,255);
+		failString += "<br><br>";
+	}
+	
+	if(vo.gradingResult != "" && vo.gradingResult != null){
+    	failString += "("+vo.gradingResult+") "+ "일부 Output을 해석할 수 없습니다.<br>";
+	}
+	
+	alertFail("오답", failString, function(result) {
+		goProblemAfterSubmit();						
+	});
+	return false;
+}
+
+//submit success
+function submitResultSuccess(vo){
+	
+	var successMessage = "Sample input 파일로 채점된 제출이 완료되었습니다.";
+	successMessage += "<br><br>";
+	if('SFY' != 'FT' && 'SFY' != 'SFY'){				
+		if(vo.testCaseNo == null || vo.testCaseNo == "0" || vo.testCaseNo == ""){	 
+				successMessage += "Result : " + comma(vo.examineeScore) +"<br><br>";	            			
+		}else{
+			successMessage += " "+ vo.testCaseNo + "개의 테스트케이스 중 " + vo.correctedCases +"개가 맞았습니다.<br><br>";
+		}	
+	}		
+	
+	if(vo.timeOut != "" && vo.timeOut != null) {
+		successMessage += "제한시간 초과가 발생하였습니다. 제한시간 초과로 전체 혹은 일부 테스트 케이스는 채점이 되지 않을 수 있습니다.<br><br>";
+	}else if(vo.runError != "" && vo.runError != null) {
+		successMessage += "런타임 에러가 발생하였습니다. 런타임 에러로 전체 혹은 일부 테스트 케이스는 채점이 되지 않을 수 있습니다. <br>";
+		successMessage += "Error Message :<br>";
+		successMessage += vo.runError.substring(0,255);
+		successMessage += "<br><br>";
+	}
+	
+	if(vo.gradingResult != "" && vo.gradingResult != null){
+		successMessage += "("+vo.gradingResult+") "+ "일부 Output을 해석할 수 없습니다.<br>";
+	}
+	
+	if('SFY' != 'FT' && 'SFY' != 'SFY'){
+		successMessage += "위 결과는 디버깅 및 최적화에 도움을 드리는 목적으로 제공됩니다.<br>";
+		successMessage += "최종 점수는 평가용 인풋 데이터로 채점되며, 가채점 결과와 다를 수 있습니다.<br>";
+		successMessage += "평가용 인풋 데이터는 강화된 예외 처리를 포함하며, 테스트 케이스의 수가 더 많습니다.";
+	}
+	
+	alertSuccess("제출", successMessage, function(result) {
+		goProblemAfterSubmit();		    					
+	});
+	return false;
+}
+
+//제출후 문제목록 화면이동
+function goContestAfterSubmit(){
+    isEditChange = false;
+    document.MainForm.action = "/exam/contest/management/contest";
+    document.MainForm.submit();
+}
+
+//제출후 문제풀기 화면이동
+function goProblemAfterSubmit(){
+    isEditChange = false;
+    
+    document.MainForm.contestId.value = 'AZMz8B-ECiIBAAZN';
+ 	document.MainForm.problemId.value = 'AZMkb42UAAsBAAa4';
+ 	document.MainForm.problemNo.value = '1';
+ 	document.MainForm.goTab.value = tab2;
+ 	document.MainForm.action = "/exam/contest/management/problem";
+ 	document.MainForm.submit();
+}
+
+// 콤마 찍기
+function comma(str){
+    str = String(str);
+    return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+}
+
+// 문제보기 popup
+function problemPopup()
+{
+	var url = "/exam/contest/management/problemPopup?problemId=AZMkb42UAAsBAAa4";
+	window.open(url,'problemPopup','top=10,left=10,width=1000, height=750,scrollbars=yes,status=0,resizable=yes,menubar=0,toolbar=0,location=0,titlebar=0,directories=0,addressbar:0');
+}
+
+//My Submit Code 조회
+function viewMySubmitCode(historyId)
+{
+	if(historyId == '' || historyId == null) return false;
+	
+	var params = {contestHistoryId : historyId};
+	var url = "/exam/contest/management/getMySubmitHistory";
+
+	$.ajax(
+	{
+		type : "GET",
+		url : url,
+		data : params,
+		async: false,
+		contentType: 'application/json',
+		dataType:'json',
+		success : function(ret)
+		{
+ 			if(ret.length != 0){
+ 				var codeStr = '';
+				$(ret).each(function(index, data) {
+					codeStr += makeCode(data);
+				});
+				
+				$("#historyCodeDiv *").remove();
+				$("#historyCodeDiv").append(codeStr);					
+			}
+		},
+		error : function(request, err, ex)
+		{
+			alertFail(err + " ===> " + ex, null, function(){});
+		}
+	});			
+}	
+
+function makeCode(obj){
+	var rowStr = '<textarea style="height: 500px; width: 100%;" readonly=true>'+obj.submitCode+'</textarea>';
+	return rowStr;     
+};	
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="./SW Certificate System_files/common.js"></script>
+<script type="text/javascript">
+
+var contextPath = "/exam";
+var bLoadFaqContentsInModal = false;
+var bLoadFaqContentsInGuide = false;
+
+$(document).ready(function () {	
+	setChangeLang();
+	//viewDetailContent();
+	
+	$('#faq').on('show.bs.modal', function(e) {
+		loadFaqContent('modal');
+	})
+});
+	
+function viewDetailContent(){
+	var acc = document.getElementsByClassName("accordion");
+	var i;
+	for (i = 0; i < acc.length; i++) {
+	  acc[i].addEventListener("click", function() {
+	    this.classList.toggle("active");
+	    var panel = this.nextElementSibling;
+	    if (panel.style.display === "block") {
+	      panel.style.display = "none";
+	    } else {
+	      panel.style.display = "block";
+	    }
+	  });
+	}	
+
+	// 첫번째 자주묻는 질문 열어주기
+	$(".accordion:first").addClass("active");
+	$(".panel:first").css("display","block");
+}	
+
+function setChangeLang(){
+	bLoadFaqContentsInModal = false;
+	bLoadFaqContentsInGuide = false;
+	
+	if("ko" == "ko"){
+		$('.kr').addClass(" on");
+		$('.en').removeClass("on");
+		
+		$('.en').attr('onclick','changeLang("en")');
+	} else {
+		$('.kr').removeClass("on");
+		$('.en').addClass(" on");
+		
+		$('.kr').attr('onclick','changeLang("ko")');
+	}
+}
+
+function pop_instructionsTool(tool, localeLanguage)
+{
+	var url = "/exam/guide/create_project/";
+	var fileName;
+	
+	switch(tool) {
+		case "vs2017" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_VS2017_kor.html";
+			} else {
+				fileName = "create_project_VS2017_eng.html";
+			}
+			break;
+			
+		case "vs2017_PR_EX" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_VS2017_PR_EX_kor.html";
+			} else {
+				fileName = "create_project_VS2017_PR_EX_eng.html";
+			}
+			break;
+			
+		case "vs2013" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_VS2013_kor.html";
+			} else {
+				fileName = "create_project_VS2013_eng.html";
+			}
+			break;
+			
+		case "vs2013_PR_EX" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_VS2013_PR_EX_kor.html";
+			} else {
+				fileName = "create_project_VS2013_PR_EX_eng.html";
+			}
+			break;
+			
+		case "eclipse2018" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_eclipse2018-09_kor.html";
+			} else {
+				fileName = "create_project_eclipse2018-09_eng.html";
+			}
+			break;
+			
+		case "eclipse2018_PR_EX" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_eclipse2018-09_PR_EX_kor.html";
+			} else {
+				fileName = "create_project_eclipse2018-09_PR_EX_eng.html";
+			}
+			break;
+			
+		case "eclipse" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_eclipse_kor.html";
+			} else {
+				fileName = "create_project_eclipse_eng.html";
+			}
+			break;
+			
+		case "eclipse_PR_EX" :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_eclipse_PR_EX_kor.html";
+			} else {
+				fileName = "create_project_eclipse_PR_EX_eng.html";
+			}
+			break;
+			
+		default :
+			if(localeLanguage == "ko"){
+				fileName = "create_project_pycharm_kor.html";
+			} else {
+				fileName = "create_project_pycharm_eng.html";
+			}
+			break;
+	}
+	
+	url = url + fileName;
+	window.open(url,'faq1','top=150,left=400,width=1000, height=750,scrollbars=yes,status=0,resizable=yes,menubar=0,toolbar=0,location=0,titlebar=0,directories=0,addressbar:0');
+}
+
+function pop_resetTool(version, localeLanguage)
+{
+	var url = "/exam/guide/reset_settings/";
+	var fileName;
+	
+	if(version == "new") {
+		if(localeLanguage == "ko"){
+			fileName = "reset_settings_VS2017_eclipse2018-09_kor.html";
+		} else {
+			fileName = "reset_settings_VS2017_eclipse2018-09_eng.html";
+		}
+	} else {
+		if(localeLanguage == "ko"){
+			fileName = "reset_settings_VS2013_eclipse_kor.html";
+		} else {
+			fileName = "reset_settings_VS2013_eclipse_eng.html";
+		}
+	}
+	
+	url = url + fileName;
+	window.open(url,'faq1','top=150,left=400,width=1000, height=750,scrollbars=yes,status=0,resizable=yes,menubar=0,toolbar=0,location=0,titlebar=0,directories=0,addressbar:0');
+}
+
+function pop_resetTool_PyCharm(localeLanguage)
+{
+	var url = "/exam/guide/reset_settings/";
+	var fileName;
+	
+	if(localeLanguage == "ko"){
+		fileName = "reset_settings_pycharm_kor.html";
+	} else {
+		fileName = "reset_settings_pycharm_eng.html";
+	}
+	
+	url = url + fileName;
+	window.open(url,'faq1','top=150,left=400,width=1000, height=750,scrollbars=yes,status=0,resizable=yes,menubar=0,toolbar=0,location=0,titlebar=0,directories=0,addressbar:0');
+}
+
+function setContestsGuide(){
+	
+	$('#titleGuide').html("시험안내");
+	
+	$('#divTab').show();
+	$('#divGuide').show();
+	$('#contestsFaq').css("display", "none");
+}
+
+function setContestsFaq(){
+	
+	$('#titleGuide').html("자주묻는질문");
+	loadFaqContent("guide");
+	$('#divTab').hide();
+	$('#divGuide').hide();
+	$('#contestsFaq').css("display", "block");
+}
+
+function loadFaqContent(type){
+	var url = "/exam/guide/faq/faq_";
+	var url_middle = "SFY" !== 'undefined' ? "SFY" : 'FT';
+	var url_end = "ko" == "ko" ? 'kor':'eng';
+	url = url+url_middle+'_'+url_end+'.html';
+	//var url = "/exam/guide/faq/faq_FT_kor.html";
+
+	if(type === 'guide'){
+		if(!bLoadFaqContentsInGuide){
+			$('#contestsFaq').load(url, function(resp, status, xhr){      
+		        if (status == "success" && xhr.status == 200){
+		            viewDetailContent();
+		            bLoadFaqContentsInGuide = true;
+		        }
+		        else{
+		            console.log("something wrong happend!");
+		        }
+		    });
+		}
+	}
+	else {
+		
+		if(!bLoadFaqContentsInModal){
+			$('#faq .content-wrap').load(url, function(resp, status, xhr){      
+			        if (status == "success" && xhr.status == 200){
+			            viewDetailContent();
+			            bLoadFaqContentsInModal = true;
+			        }
+			        else{
+			            console.log("something wrong happend!");
+			        }
+			    });
+		}
+	}
+}
+
+function popupManual()
+{
+	var url = "/exam/contest/manual/manualPopup?contestId=AZMz8B-ECiIBAAZN&contestTypeCd=SFY";
+	window.open(url,'manual','top=100,left=350,width=840, height=620,scrollbars=no,status=0,resizable=yes,menubar=0,toolbar=0,location=0,titlebar=0,directories=0,addressbar:0');
+}
+
+function sessionCheck(callback, params) {
+	$.ajax({
+	    url : "/exam/common/getServerTime",
+	    type : 'GET',
+	    async: false,
+	    success: function (ret) {
+	    	if (ret.message == "noSession") {
+	    		alertNoSession();
+	    		return;
+			} else {
+				callback.apply(this, params);
+			}
+	    },
+	    error : function () {
+	    	alert("Server error.");
+	    },
+	    scope : this
+	});
+}
+
+function popupReference()
+{
+	var url = "/exam/common/solveReference";
+	window.open(url,'SCSFYSWProblemSolvingReference','toolbar=0,location=no,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=1150,height=768');
+}
+</script>
+<div class="gnb-wrap">
+	<a herf="#" class="home"><img src="./SW Certificate System_files/logo_exam.png"></a>
+	<a class="not-event">김강진0488(포도01044280488)</a>
+	
+		
+			
+			
+				<a herf="#" title="시험안내" data-toggle="modal" data-target="#info">시험안내<!-- 시험안내 --></a>
+				<a herf="#" title="시험안내" data-toggle="modal" data-target="#faq">자주묻는질문</a>			
+			
+			
+		<a herf="#" onclick="popupManual();">메뉴얼<!-- 메뉴얼 --></a>
+		
+			<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="sessionCheck(popupReference, null);" title="S/W Problem Solving Reference">S/W Problem Solving Reference</a>
+		
+	
+	<a herf="#" class="kr on">KR</a>
+	<a herf="#" class="en" onclick="changeLang(&quot;en&quot;)">EN</a>
+</div>
+
+
+<!-- Modal : FAQ -->
+<div class="modal scs-modal fade" id="faq" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="">자주묻는질문<!-- 자주묻는질문 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- content-wrap -->
+				<div class="content-wrap"></div>
+				<!-- //content-wrap -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Modal : FAQ -->
+	
+<!-- Modal : guide info -->
+<div class="modal scs-modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<!-- modal-header -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="">시험안내<!-- 시험안내 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<!-- //modal-header -->
+			<!-- modal-body -->
+			<div class="modal-body">
+				<div class="policy_wrap">
+					<span><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span style="color: rgb(8, 82, 148); font-size: 18px;"><span style="font-weight: bolder;">□ 부정행위 처리</span></span><span style="font-size: 18px;">﻿</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 스마트워치 등 응시와 무관한 전자 기기를 사용하는 행위</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 시험 시스템 접속을 제외한 네트웍을 사용하는 행위</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 응시자 외 다른 사람이 응시장소에 있을 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 응시에 필요한 준비물&nbsp;외의 물건이 있을 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 응시에 무관한 프로그램을 설치/사용하는 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 다른 사람이 대신 대리 응시하는 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;-&nbsp;시험문제, 사용했던 연습지를 외부로 유출하는 행위</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 감독관의 정당한 지시에 불응할 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span style="color: rgb(8, 82, 148); font-size: 18px; font-weight: bold;">□ 응시자 신원 확인</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 시험 시작 전 응시자 신원 확인 예정</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 신분증 사전 준비 필요</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 주민등록증, 운전면허증, 유효기간이 지나지 않은 여권 중 택1</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span style="color: rgb(8, 82, 148); font-size: 18px; font-weight: bold;">□ 응시종료 안내</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 시험시간이 종료되면 답안 제출 불가(남은 시간 수시 확인)</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;- 시험시작 60분 이후부터 가능하며, 카메라를 향해 손을 들어 퇴실 요청표시 후 지시에 따라 진행</p><p><font face="굴림" size="3"></font><font face="굴림" size="3"><br></font></p><p align="left" style="margin: 0cm 0cm 10pt 4.3pt; line-height: 15pt; text-indent: -18pt;"><span lang="EN-US" style="color: rgb(0, 112, 192); font-size: 12pt;"><font face="맑은 고딕">&nbsp; &nbsp;※</font></span><span lang="EN-US" style="color: rgb(0, 112, 192); font-family: &quot;Times New Roman&quot;, &quot;serif&quot;; font-size: 7pt;">&nbsp;&nbsp;&nbsp;</span><span style="font-weight: bolder;"><span style="color: rgb(0, 112, 192); font-size: 12pt;"><font face="맑은 고딕">프로젝트 생성 및 빌드 테스트 외<span lang="EN-US">&nbsp;PC</span>사용<span lang="EN-US">(</span>코드 작성 등<span lang="EN-US">)</span>은 금지합니다</font><font face="맑은 고딕"><span lang="EN-US">.<br></span>&nbsp; 빌드 테스트를 위해서 아래 코드에 대한 입력만 허용됩니다<span lang="EN-US">.<font face="굴림" size="3"><br></font></span></font></span></span></p><table width="680" style="border: currentColor; border-image: none; width: 510.05pt;" border="1" cellspacing="0" cellpadding="0"><tbody><tr><td width="131" valign="top" style="padding: 0cm 5.4pt; border: 1pt solid windowtext; border-image: none; width: 98.1pt; background-color: transparent;"><font face="굴림" size="3"></font><p align="center" style="margin: 0cm 0cm 0pt; text-align: center; line-height: normal;"><span style="font-weight: bolder;"><span lang="EN-US" style="font-size: 12pt;"><font face="맑은 고딕">C</font></span></span></p><font face="굴림" size="3"></font></td><td width="149" valign="top" style="border-color: windowtext windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; border-image: none; width: 112pt; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="center" style="margin: 0cm 0cm 0pt; text-align: center; line-height: normal;"><span style="font-weight: bolder;"><span lang="EN-US" style="font-size: 12pt;"><font face="맑은 고딕">C++</font></span></span></p><font face="굴림" size="3"></font></td><td width="202" valign="top" style="border-color: windowtext windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; border-image: none; width: 151.7pt; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="center" style="margin: 0cm 0cm 0pt; text-align: center; line-height: normal;"><span style="font-weight: bolder;"><span lang="EN-US" style="font-size: 12pt;"><font face="맑은 고딕">Java</font></span></span></p><font face="굴림" size="3"></font></td><td width="198" valign="top" style="border-color: windowtext windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; border-image: none; width: 148.25pt; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="center" style="margin: 0cm 0cm 0pt; text-align: center; line-height: normal;"><span style="font-weight: bolder;"><span lang="EN-US" style="font-size: 12pt;"><font face="맑은 고딕">Python</font></span></span></p><font face="굴림" size="3"></font></td></tr><tr><td width="131" valign="top" style="border-color: rgb(0, 0, 0) windowtext windowtext; padding: 0cm 5.4pt; border-image: none; width: 98.1pt; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US"><font face="맑은 고딕" size="2">#include &lt;stdio.h&gt;</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US"><font face="맑은 고딕" size="2">int main()<br></font><font face="맑은 고딕" size="2">{<br>&nbsp;printf("Hello World\n");<br>&nbsp;return 0;<br>}</font></span></p><font face="굴림" size="3"></font></td><td width="149" valign="top" style="border-color: rgb(0, 0, 0) windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; width: 112pt; border-right-width: 1pt; border-bottom-width: 1pt; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US"><font face="맑은 고딕" size="2">#include &lt;iostream&gt;<br></font><font face="맑은 고딕" size="2">using namespace std;<br>int main()<br>{<br>&nbsp;cout&lt;&lt;"Hello World"&lt;&lt; endl;<br>&nbsp;return 0;<br>}</font></span></p><font face="굴림" size="3"></font></td><td width="202" valign="top" style="border-color: rgb(0, 0, 0) windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; width: 151.7pt; border-right-width: 1pt; border-bottom-width: 1pt; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US"><font face="맑은 고딕" size="2">class Solution<br></font><font face="맑은 고딕" size="2">{<br>&nbsp;public static void main(String args[]) throws Exception<br>&nbsp;{<br>&nbsp;&nbsp; System.out.println("Hello World");<br>&nbsp;}<br>}</font></span></p><font face="굴림" size="3"></font></td><td width="198" valign="top" style="border-color: rgb(0, 0, 0) windowtext windowtext rgb(0, 0, 0); padding: 0cm 5.4pt; width: 148.25pt; border-right-width: 1pt; border-bottom-width: 1pt; border-right-style: solid; border-bottom-style: solid; background-color: transparent;"><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">def main():</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">&nbsp;&nbsp;&nbsp;&nbsp;print('Hello World')</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">&nbsp;</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">&nbsp;</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">if __name__ == "__main__":</font></span></p><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><span lang="EN-US" style="font-size: 10.5pt;"><font face="맑은 고딕">&nbsp;&nbsp;&nbsp;&nbsp;main()</font></span></p><font face="굴림" size="3"></font></td></tr><tr><td width="680" valign="top" style="border-color: rgb(0, 0, 0) windowtext windowtext; padding: 0cm 5.4pt; border-image: none; width: 510.05pt; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; background-color: transparent;" colspan="4"><font face="굴림" size="3"></font><p align="left" style="margin: 0cm 0cm 0pt; line-height: normal;"><font face="맑은 고딕"><font size="2">자세한 사항은&nbsp;<span lang="EN-US">‘</span></font><font size="2">자주 묻는 질문<span lang="EN-US">’</span></font><font size="2">의&nbsp;</font><i><font size="2">외부 툴<span lang="EN-US">(Visual studio, Eclipse, Pycharm)&nbsp;</span></font><font size="2">사용법을 모르겠습니다</font></i><font size="2">&nbsp;참조</font></font></p><font face="굴림" size="3"></font></td></tr></tbody></table><p><br></p><p><span style="color: rgb(8, 82, 148); font-family: &quot;맑은 고딕&quot;, arial; font-size: 18px; font-weight: bold;"><br></span></p><p><span style="color: rgb(8, 82, 148); font-family: &quot;맑은 고딕&quot;, arial; font-size: 18px; font-weight: bold;">□ FAQ<span style="font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px;"><br></span></span></p><p><span style="font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px;">&nbsp;1. 온라인 감독 시스템 접속 시 카메라 및 마이크 '허용 안함'을 눌렀습니다</span><br></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;&nbsp;&nbsp; : 해당 브라우저의 마이크/카메라&nbsp;허용 옵션을 활성화해 주세요</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Chrome(권장)으로 접속한 경우</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp; &nbsp; &nbsp; &nbsp; 안드로이드 : Chrome &gt; 우측 상단 ‘…’ 메뉴 &gt; 설정 &gt; 고급 &gt; 사이트 설정 &gt; 마이크/카메라 허용</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IOS : 설정 &gt; Chrome &gt; Chrome 접근 허용 &gt; 마이크/카메라 허용</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;2. 스마트폰 화면에 저의 영상이 보이지 않아요</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;&nbsp;&nbsp; : 카메라 장치가 켜진 프로그램을 동시에 접속하고 있진 않은지 확인해 주시길 바랍니다</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;&nbsp;&nbsp;&nbsp; 쿠키 및 캐시 삭제 후 재접속 해 주시길 바랍니다</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;">&nbsp;3.&nbsp;<span style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">감독관 목소리가 작아서 잘 들리지 않습니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp; :&nbsp;</span><span style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">브라우저를 새로 고침 해 주시고</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">,&nbsp;</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 15.33px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">스마트폰의 볼륨</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 15.33px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">(</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 15.33px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">미디어 볼륨 포</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">함</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">)</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">을 확인해 주시길 바랍니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;"></span>&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;4.&nbsp;</span><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">권장 개발 툴 외의 프로그램 사용이 가능한가요</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp; : 권장 개발 툴 외의 개발 툴을 활용하여 발생하는 오류에 대해서는 지원 불가합니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 허용된 프로그램은 개발 툴, PC계산기, PC메모장입니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;"></span>&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;5. 인터넷 브라우저는 어느 것을 사용해야 하나요</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp; : PC 및 스마트폰 모두 크롬 브라우저를 권장합니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;"></span>&nbsp;</p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;6. 응시 중 화장실 이용이 가능한가요</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp; : 응시 시작 1시간 이후 한 번, 5분 이내로 이용 가능합니다</span></p><p style="border: 0px currentColor; border-image: none; font-family: &quot;맑은 고딕&quot;, arial; font-size: 13.33px; margin-top: 5px; margin-bottom: 5px;"><span lang="EN-US" style="margin: 0px; padding: 0px; border: 0px currentColor; border-image: none; line-height: 18.66px; font-family: &quot;맑은 고딕&quot;; font-size: 10pt;">&nbsp;&nbsp;&nbsp;&nbsp; 이용이 필요하신 경우 감독관에게 수신호로 말씀해 주세요</span></p></span><p><br></p>
+				</div>
+			</div>
+			<!-- //modal-body -->
+		</div>
+	</div>
+</div>
+<!-- //Modal : guide info -->	
+
+		
+	<form id="MainForm" name="MainForm" action="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest" method="get">
+		<input type="hidden" name="contestId" value="AZMz8B-ECiIBAAZN">
+		<input type="hidden" name="problemId" value="AZMkb42UAAsBAAa4">
+		<input type="hidden" name="problemNo" value="1">		
+		<input type="hidden" id="goTab" name="goTab" value="contest">		
+	</form>
+
+<div class="exam content-container problem">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="./SW Certificate System_files/common.js"></script>
+<script type="text/javascript">
+	var remainSeconds = '3413' - 0;
+	
+	$(document).ready(function (){	
+		var starttime = new Date("Sun, 17 Nov 2024 16:25:00");
+		var endtime = new Date("Sun, 17 Nov 2024 17:45:00");
+	
+		displayContesttime(starttime,endtime);
+		
+		
+			probTime0 = '1374'- 0;
+			displayTimer('probTime0', probTime0);
+		
+			probTime1 = ''- 0;
+			displayTimer('probTime1', probTime1);
+		
+		
+		displayTimer('remainTime', remainSeconds);
+		tickMinute();
+		tickSecond();
+		
+			
+		
+	    $('#question').keyup(function() {
+	    	// 입력 제한 길이
+	    	var textCountLimit = 1000;
+	        var textLength = $(this).val().length;
+	        
+	        if (textLength > textCountLimit) {
+				 bootbox.alert(textCountLimit+"자 이내로 작성해 주세요.","","5",null, function(result) {});        	
+	            $(this).val($(this).val().substr(0, textCountLimit));
+	        }
+	    });
+	});		
+	
+	function displayContesttime(starttime,endtime)
+	{
+	    var year = starttime.getFullYear();
+	    var month = starttime.getMonth() + 1;
+	    var date = starttime.getDate();
+	    var starthour = starttime.getHours();
+	    var startminute= starttime.getMinutes();
+	    var endhour = endtime.getHours();
+	    var endminute= endtime.getMinutes();
+
+		if(month < 10) { month = "0" + month };
+		if(date < 10) { date = "0" + date };
+		if(starthour < 10) { starthour = "0" + starthour };
+		if(startminute < 10) { startminute = "0" + startminute };
+		if(endhour < 10) { endhour = "0" + endhour };
+		if(endminute < 10) { endminute = "0" + endminute };
+
+	    $("#contestTime").html(year + "-" + month + "-" + date + " " + starthour + ":" + startminute + " ~ " + endhour + ":" + endminute);
+	}	
+	
+	// 시간을 시계로 표시
+	function displayTimer(id, sec)
+	{
+		var Seconds = sec;
+ 
+		var Hours = Math.floor(Seconds / 3600);
+		Seconds -= Hours * (3600);
+
+		var Minutes = Math.floor(Seconds / 60);
+		Seconds -= Minutes * (60);
+
+		$("#" + id + "_hour").html(leadingZero(Hours));
+		$("#" + id + "_min").html(leadingZero(Minutes));
+		$("#" + id + "_sec").html(leadingZero(Seconds));
+		
+		$("#" + id ).html(leadingZero(Hours) + ":" + leadingZero(Minutes) + ":" + leadingZero(Seconds));
+	}	
+	
+	// 시분초 2자리 만들기
+	function leadingZero(Time)
+	{
+		return (Time < 10)  ? "0" + Time : +Time;
+	}
+	
+	var syncTryCount = 0;
+	
+	// 1분마다 호출
+	function tickMinute()
+	 {
+		var contestId = 'AZMz8B-ECiIBAAZN'
+		var params = {
+			contestId : contestId
+		};
+		var url = "/exam/common/contestRemainTime";
+		
+		$.ajax(
+		{
+			type : "POST",
+			url : url,
+			data : JSON.stringify(params),
+			async: false,
+			cache: false,
+            contentType:"application/json; charset=utf-8",
+	        dataType:"json",
+			success : function(ret)
+			{
+				if (ret.message == "noSession") {
+					alertNoSession();
+					return;
+				} 
+				
+				syncTryCount=0;
+				
+				remainSeconds = ret.remainEtime;
+				displayTimer('remainTime', remainSeconds);
+				
+				if(remainSeconds>0){
+					var starttime = new Date(ret.startDatetime);
+					var endtime = new Date(ret.endDatetime);
+					starttime.setSeconds(starttime.getSeconds());
+					endtime.setSeconds(endtime.getSeconds());
+					
+					displayContesttime(starttime,endtime);
+					clearTimeOut();
+					var timeoutID = window.setTimeout("tickMinute()", 60 * 1000);
+					$("#timeoutID").val(timeoutID);
+				} 
+				
+				if(ret.notice != null){
+					var notice = ret.notice.contents;
+					var noticeEn = ret.notice.contentsEn;
+					var noticeMessage = "공지사항";
+					
+					$("#noticeList").html(rowNoticeItem(ret.notice));
+					$("#notice").modal();
+				}	
+				
+				if(ret.qna != null){
+					var answerTitle = "답변";
+					
+					var qna = "";
+					qna += '<a href="#" class="accordion answer active">';
+					qna += '<span class="icon-qna qna-comp">답변 완료</span>';
+					qna += '<span class="icon-qna qna-division">';
+					if(ret.qna.questionTypeId == 0){ qna += '문제'; } 
+					if(ret.qna.questionTypeId == 1){ qna += '운영'; } 
+					if(ret.qna.questionTypeId == 2){ qna += '시스템'; } 
+					if(ret.qna.questionTypeId == 3){ qna += '기타'; }							
+					qna += '</span>';					
+					qna += '<span class="accordion-title">' + ret.qna.question + '</span>';	
+					qna += '<span class="icon-arrow"></span></a>';
+									
+					qna += '<div class="panel" style="display:block;"><div><p>';
+					qna += '[';
+					qna += ret.qna.answerTypeI18n;
+					qna += '] ';
+					qna += ret.qna.answer;
+					qna += '</p></div></div>';					
+
+					$("#qnaList").html(qna);
+					$("#answerTitle").html(answerTitle);
+					$("#questionDiv").hide();
+					$("#qna").modal();
+					viewAnswer();
+				}	
+				
+				if(ret.contestScoreBoard != null) {
+					displayScoreBoard(ret.contestScoreBoard);
+				}				
+			},
+			error : function(request, err, ex)
+			{
+				if(syncTryCount < 2){
+					console.log("syncTryCount : " + syncTryCount);
+					syncTryCount++;
+					tickMinute();
+				}
+				else {
+					if(ex.indexOf("NetworkError") > -1){		
+						console.log("NetworkError : " + ex);
+						bootbox.alert("에러 메시지 : Network Error\n\n 네트워크 에러가 발생하였습니다.\n\n 현재 실행 중인 화면이 새로 고침 됩니다.", " ","2",null, function() {
+							document.MainForm.submit();
+						});
+					}else{
+						console.log("Other error : " + ex);
+						bootbox.alert(err + " ===> " + ex, " ","4",null, function() {	
+							document.MainForm.submit();
+						}); 	
+					}
+				}
+			}
+		});
+	};
+	
+	function clearTimeOut() {
+		var timeoutID = $("#timeoutID").val();
+		window.clearTimeout(timeoutID);		
+	}
+	
+	// 1초마다 호출
+	function tickSecond()
+	{
+		displayTimer('remainTime', --remainSeconds);
+		if(remainSeconds <= 0)
+		{
+			$("#remainTime").html("00 : 00 : 00");
+			bootbox.alert("시간이 종료되었습니다.\n수고하셨습니다.", " ","2",null, function() {
+				goEndOnTime();
+			}); 
+			return;
+		}
+		else{
+			
+				
+			
+				
+				
+			window.setTimeout("tickSecond()", 1000);
+		}
+	}	
+	
+	// 응시종료
+	function goEndOnTime()
+	{
+		document.endForm.action = "/exam/contest/management/end";
+		document.endForm.submit(); 				
+	}
+	
+	// 응시종료 확인
+	function confirmEnd()
+	{
+		bootbox.confirm("정말로 응시 종료하시겠습니까?", "응시종료", function(result) {
+ 			if(result){
+ 				goEndOnTime();
+ 			}
+		});   
+	}	
+	
+	// 질의응답
+	function popupQNA()
+	{
+		// 질의응답 입력값 초기화
+		$("input:radio[id='selectValue']").prop('checked', true);
+		$("#question").val("");
+		$("#questionDiv").show();
+		$("#answerTitle").html("질의응답");
+		
+		var params = {};
+		var url = "/exam/message/qnaPopup";
+
+		$.ajax(
+		{
+			type : "GET",
+			url : url,
+			data : params,
+			async: false,
+			contentType: 'application/json',
+			dataType:'json',
+			success : function(ret)
+			{
+				var rowStr = '';
+	 			if(ret.length != 0){
+					var qnaDataList = new Array();
+					$(ret).each(function(index, data) {
+						var qnaObj = new Object();
+						qnaObj.qnaId = data.qnaId;
+						qnaObj.questionTypeId = data.questionTypeId;
+						qnaObj.question = data.question;
+						qnaObj.answerTypeI18n = data.answerTypeI18n;
+						qnaObj.answer = data.answer;
+						qnaObj.isAnswered = data.isAnswered;
+						qnaDataList.push(qnaObj);
+					});
+					
+					if(qnaDataList.length > 0){
+						for(var i = 0; i < qnaDataList.length; i++){
+							rowStr += '<a href="#" class="accordion answer">';
+							if(qnaDataList[i].isAnswered){
+								rowStr += '<span class="icon-qna qna-comp">답변 완료</span>';
+							} else {
+								rowStr += '<span class="icon-qna qna-ready">답변 준비</span>';
+							}
+							rowStr += '<span class="icon-qna qna-division">';
+							if(qnaDataList[i].questionTypeId == 0){ rowStr += '문제'; } 
+							if(qnaDataList[i].questionTypeId == 1){ rowStr += '운영'; } 
+							if(qnaDataList[i].questionTypeId == 2){ rowStr += '시스템'; } 
+							if(qnaDataList[i].questionTypeId == 3){ rowStr += '기타'; } 								
+							rowStr += '</span>';
+							rowStr += '<span class="accordion-title">' + qnaDataList[i].question + '</span>';
+							rowStr += '<span class="icon-arrow"></span></a>';									
+							rowStr += '<div class="panel"><div><p>';
+							rowStr += '[';
+							
+							if(qnaDataList[i].isAnswered){
+								rowStr += qnaDataList[i].answerTypeI18n;
+								rowStr += '] ';
+								rowStr += qnaDataList[i].answer;
+							} else {
+								rowStr += '답변 준비';
+								rowStr += '] ';
+							}
+							rowStr += '</p></div></div>';								
+						}						
+					} 					
+				} else {
+					rowStr += '<a href="#" class="accordion">';
+					rowStr += '<span class="accordion-title no-data-found">';
+					rowStr += '등록된 질문이 없습니다.';
+					rowStr += '</span>';
+					rowStr += '</a>';					
+				}
+	 			$("#qnaList").html(rowStr);
+			},
+			error : function(request, err, ex)
+			{
+				bootbox.alert(err + " ===> " + ex, " ","4",null, function() {														
+				}); 													
+			}
+		});		
+		
+		$("#qna").modal();
+		viewAnswer();
+		
+	}	
+	
+	function viewAnswer(){
+		var acc = document.getElementsByClassName("accordion answer");
+		var i;
+		for (i = 0; i < acc.length; i++) {
+		  acc[i].addEventListener("click", function() {
+		    this.classList.toggle("active");
+		    var panel = this.nextElementSibling;
+		    if (panel.style.display === "block") {
+		      panel.style.display = "none";
+		    } else {
+		      panel.style.display = "block";
+		    }
+		  });
+		}	
+	}	
+	
+	var isSubmitBtnClick = false;
+	function onQuestionSubmit() {
+		if(isSubmitBtnClick){
+			return false;
+		} else {
+			isSubmitBtnClick = true;	
+		}
+
+		var question = $("#question").val();
+		if (question == "") {
+			bootbox.alert("질문을 입력하세요.", "", "5", null, function(result) {
+			});
+			isSubmitBtnClick = false;
+			return false;
+		} else {
+			bootbox.confirm("질문을 등록하시겠습니까?", "", function(result) {
+				isSubmitBtnClick = false;
+				if(result){ 
+// 					showLoading(false, contextPath + "/images/common/loading5.gif", 90, 84);
+					var params = {
+							contestId : $("#contestId").val(),
+							question : $("#question").val(),
+							questionTypeId : $(":input:radio[name=questionTypeId]:checked").val()
+					};
+					$.ajax({
+						type : 'POST',
+						url : "/exam/message/saveQuestion",
+						data : params,
+						dataType : 'json',
+						success : function(ret) {
+// 							hideLoading();
+							$("#questionSubmitBtn").attr("onclick","onQuestionSubmit();");
+							if (ret.message == "save_ok") {
+								bootbox.alert("질문이 등록되었습니다.","", "3", null, function(result) {
+				    			});
+								$("#qna").modal("hide");
+							} else {
+								if (ret.message == "noSession") {
+									bootbox.alert("세션이 만료되었습니다. 로그인 페이지로 이동합니다.", " ","4",null, function() {
+										document.location.href = contextPath + "/exam";
+									});
+					            } else {
+									bootbox.alert("질문이 등록되지 않았습니다. 관리자에게 문의 하십시오. ","", "4", null, function(result) {
+					    			});
+									return false;
+					            }
+						    } 
+						},
+						error : function(request, err, ex) {
+// 							hideLoading();
+							$("#questionSubmitBtn").attr("onclick","onQuestionSubmit();");
+							bootbox.alert(err + " ===> " + ex, "", "4", null, function(result) {	                	
+		        			});
+							return false;
+						}
+					});
+				} 
+			});	
+		}
+	}	
+	
+	// ScoreBoard표시
+	function displayScoreBoard(contestScoreBoard) {
+		$("#firstScore").html(contestScoreBoard.score1st);
+		$("#secondScore").html(contestScoreBoard.score2nd);
+		$("#thirdScore").html(contestScoreBoard.score3rd);
+	}	
+	
+	function popupScoreBoard(){
+		$("#scoreboard").modal();
+	}
+	
+</script>
+
+<form id="command" name="questionForm" action="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest" method="post">
+	<input type="hidden" name="contestId" id="contestId" value="AZMz8B-ECiIBAAZN">
+	<input type="hidden" name="messageContent" id="messageContent">
+	<input type="hidden" name="selectionValue" id="selectionValue">
+	<input type="hidden" id="timeoutID" value="2232">
+</form>
+<form id="command" name="endForm" action="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest" method="get">
+</form>
+
+<div style="" class="left-frame">
+	<div class="btn-group">
+	  <a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn" title="공지사항" onclick="popupNotice();">공지사항<!-- 공지사항 --></a>
+	  <a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn" title="질의응답" onclick="popupQNA();">질의응답<!-- 질의응답 --></a>
+	</div>
+	<div class="exam-title">
+		<span>검정명<!-- 검정명 --></span>
+		<h4>[SSAFY] SW 적성진단 전공자용</h4>
+	</div>
+	<div class="exam-period">
+		<span>검정 기간<!-- 검정 기간 --></span>
+		<h4><span id="contestTime">2024-11-17 16:25 ~ 17:45</span></h4>
+	</div>
+	<div class="exam-left-time">
+		<span class="left-tit">남은 시간<!-- 남은 시간 --> </span>
+		<div class="time">
+			<h3><span id="remainTime_hour">00</span></h3>:<h3><span id="remainTime_min">55</span></h3>:<h3><span id="remainTime_sec">32</span></h3>
+		</div>
+	</div>
+	<div class="exam-left-grid">
+		<span>문제별 상황<!-- 문제별 상황 --></span>
+		<table class="left-frame grid">
+			<thead>
+				<tr>
+					<th>문제<!-- 문제 --></th>
+					<th>상태<!-- 상태 --></th>
+					<th>제출횟수<!-- 제출횟수 --></th>
+					<th>경과 시간<!-- 경과시간 --></th>
+				</tr>
+			</thead>
+			<tbody id="problemStatusList">
+			
+				<tr>
+					<td>1</td>
+					<td>
+						
+							
+								
+								
+									<span class="color-green">ACCEPT</span>
+								
+							
+							
+							
+												
+					</td>
+					<td><span class="color-dark">2</span> / 
+						<span>
+							
+								
+									∞
+								
+								
+												
+						</span>
+					</td>
+					<td><span id="probTime0_hour">00</span>:<span id="probTime0_min">22</span>:<span id="probTime0_sec">54</span></td>
+				</tr>			
+			
+				<tr>
+					<td>2</td>
+					<td>
+						
+							
+							
+							
+								-
+							
+												
+					</td>
+					<td><span class="color-dark">0</span> / 
+						<span>
+							
+								
+									∞
+								
+								
+												
+						</span>
+					</td>
+					<td><span id="probTime1_hour">00</span>:<span id="probTime1_min">00</span>:<span id="probTime1_sec">00</span></td>
+				</tr>			
+			
+			</tbody>
+		</table>
+	</div>
+	<!-- //문제별 상황 -->
+	
+	<!-- //ample Score Board -->	
+	<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="confirmEnd();" class="btn btn-lg btn-dark btn-exam-fin" title="응시종료">응시종료<!-- 응시종료 --></a>
+</div>
+
+<!-- Modal : Notice -->
+<script type="text/javascript">
+	//ê³µì§ì¬í­
+	function popupNotice()
+	{
+		var params = {};
+		var url = "/exam/message/noticePopup";
+	
+		$.ajax(
+		{
+			type : "GET",
+			url : url,
+			data : params,
+			async: false,
+			contentType: 'application/json',
+			dataType:'json',
+			success : function(ret)
+			{
+				var row = "";
+	 			if(ret.length != 0){
+					$(ret).each(function(index, data) {
+						row += rowNoticeItem(data);
+					});
+				} else {
+					row = '<a href="#" class="poll">'
+						+ '		<span class="poll-title no-data-found">등록된 공지사항이 없습니다.</span>'
+						+ '</a>';					
+				}
+	 			$("#noticeList").html(row);
+			},
+			error : function(request, err, ex)
+			{
+				bootbox.alert(err + " ===> " + ex, " ","4",null, function() {														
+				}); 													
+			}
+		});		
+		
+		$("#notice").modal();
+	}	
+	
+	function rowNoticeItem(obj){
+		var rowStr = '<a href="#" class="poll">'
+			+ '		<span class="poll-title">' + obj.contentI18n +'</span>'
+			+ '		<span class="list-date">'+ obj.regDateStr +'</span>'
+			+ '</a>';
+	        
+		return rowStr;     
+	};
+</script>
+<!-- Modal : Notice -->
+<div class="modal scs-modal fade" id="notice" tabindex="-1" role="dialog" aria-="" labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="">공지사항<!-- ê³µì§ì¬í­ --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- content-wrap -->
+				<div class="content-wrap">
+					<!-- accordion_wrap -->
+					<div class="poll-wrap notice" id="noticeList">
+
+					</div>
+					<!-- //accordion_wrap -->
+				</div>
+				<!-- //content-wrap -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Modal : Notice -->
+
+<!-- Modal : QNA -->
+<div class="modal scs-modal fade" id="qna" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="answerTitle">질의응답<!-- 질의응답 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- content-wrap -->
+				<div class="content-wrap">
+					<!-- question-wrap -->
+					<div class="question-wrap" id="questionDiv" style="min-height:300px">
+						<span class="qna-text">
+							※ 오른쪽 예시와 같이 객관식으로만 답변 드릴 수 있으니, 이에 맞추어 질문해 주시기 바랍니다.  답변 예시)  <strong>1. 예<!-- 예 --></strong><strong>2. 아니오<!-- 아니오 --></strong><strong>3. 대답할 수 없음<!-- 대답할 수 없음 --></strong>
+						</span>
+						<!-- 질문유형  선택 -->
+						<div class="checks-wrap" style="height:30px">
+							<span>질문 유형을 선택해 주세요.<!-- 질문 유형을 선택해 주세요. --></span>
+							<div class="checks">
+								  <input type="radio" id="selectValue" name="questionTypeId" value="0" checked="checked"> 
+								  <label for="selectValue">문제<!-- 문제 --></label> 
+							</div>
+							<div class="checks">
+								  <input type="radio" id="selectValue1" name="questionTypeId" value="1"> 
+								  <label for="selectValue1">운영<!-- 운영 --></label> 
+							</div>
+							<div class="checks">
+								  <input type="radio" id="selectValue2" name="questionTypeId" value="2"> 
+								  <label for="selectValue2">시스템<!-- 시스템 --></label> 
+							</div>
+							<div class="checks">
+								  <input type="radio" id="selectValue3" name="questionTypeId" value="3"> 
+								  <label for="selectValue3">기타<!-- 기타 --></label> 
+							</div>							
+
+						</div>
+						<!-- //질문유형  선택 -->
+						<div class="qna-form">
+							<textarea style="height:160px" placeholder="질문 사항을 적어주세요." id="question"></textarea>
+						</div>
+						<div class="qna-btn-wrap">
+							<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="onQuestionSubmit();" id="questionSubmitBtn" class="btn btn-lg btn-violet-line" title="제출">제출<!-- 제출하기 --></a>
+						</div>
+					</div>
+					<!-- //question-wrap -->
+
+					<!-- accordion_wrap -->
+					<div class="accordion-wrap" id="qnaList">
+
+					</div>
+					<!-- //accordion_wrap -->
+				</div>
+				<!-- //content-wrap -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Modal : QnA -->
+
+<!-- Modal : ScoreBoard -->
+<div class="modal scs-modal fade" id="scoreboard" tabindex="-1" role="dialog" aria-="" labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="">[Score Board 안내]<!-- Score Board 안내 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- content-wrap -->
+				<div class="content-wrap">
+					<!-- accordion_wrap -->
+					<div class="poll-wrap notice" id="noticeList">
+						<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="poll">
+							<span class="poll-title">
+								Score Board (sample input 기준)은 검정 중 1~3위의 제출 결과를 보여주는 기능 입니다.<br><br>
+								1. Score Board는 참고용으로 제공되는 기능으로 제공된 점수가 검정의 합격/불합격을 의미하는 것은 아니며, 최종 결과는 다를 수 있습니다.<br><br>
+								2. 업데이트 시간은 아래와 같습니다.<br>검정 시작 후 1시간 30분이 지난 후부터 30분 단위로 업데이트 되며, 종료 30분전에 최종 업데이트 됩니다.
+							</span>
+						</a>
+					</div>
+					<!-- //accordion_wrap -->
+				</div>
+				<!-- //content-wrap -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //Modal : ScoreBoard -->
+
+	<div style="" class="right-frame detail" id="examDiv">
+		<div class="topnavi">
+			<!-- set problem level class -->
+			
+				
+				
+				
+					
+				
+																						
+																						
+																						
+																						
+					
+			<span class="level level-medium"></span><span class="tit">1. 동일값</span>
+			<!-- submit-history  -->
+			<div class="submit-history">
+				<span>제출횟수<!-- 제출횟수 --> :<strong id="solveCount">2</strong>
+						<strong>
+							
+								
+									∞
+								
+								
+												
+						</strong>
+				</span>
+				<span>제출시간<!-- 제출시간 --> :<strong id="submitTime">16:48:04</strong></span>
+				<span>상태<!-- 상태 --> :<span id="submitStatus">
+					
+						
+							
+							
+								<strong class="color-green">ACCEPT</strong>
+							
+						
+						
+						
+										
+				</span></span>
+				<span><a class="btn-text" href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="viewCode();">제출코드<!-- 코드보기 --></a></span>
+			</div>
+			<!-- //submit-history  -->
+			<!-- submit-history-layer -->
+			<div class="submit-history-layer"> <!-- 제출내역보기 버튼 클릭시 show CSS 추가 -->
+				<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="getMySubmitHistory();" class="btn btn-primary submit-history-btn" title="제출 내역">•••</a>
+				<div>
+					<span>제출횟수<!-- 제출횟수 --> :<strong>2</strong><strong>
+							
+								
+									∞
+								
+								
+															
+							</strong></span>
+					<table class="left-frame grid">
+						<thead>
+							<tr>
+								<th>제출시각<!-- 제출시간 --></th>
+								<th>제출<!-- 솔루션 --></th>
+								<th>결과<!-- 결과 --></th>
+							</tr>
+						</thead>
+						<tbody id="mySubmitHistoryList">
+								
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- //submit-history-layer -->
+
+		</div>
+		<!-- tab-wrap -->
+		<div class="tab-wrap">
+			<ul>
+				<li title="문제" data-tab="tab1" class="">문제<!-- 문제보기 --></li>
+				<li title="문제풀이" data-tab="tab2" class="on">문제풀이<!-- 문제풀기 --></li>
+			</ul>
+		</div>
+		<!-- //tab-wrap -->
+		<!-- Tab1 문제보기 -->
+		<div class="content-wrap" id="tab1">
+			<p><br></p><table width="831" class="MsoTableGrid" border="1" cellspacing="0" cellpadding="0" style="width: 623.3pt; color: rgb(33, 37, 41); font-family: &quot;맑은 고딕&quot;; font-size: small; border: currentcolor;"><tbody><tr><td width="111" valign="top" style="padding: 0cm 5.4pt; border-width: 1pt; border-style: solid; border-color: windowtext; width: 83.4pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><font color="#000000"><span style="font-size: 14px;">제한 조건</span><span lang="EN-US"><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td><td width="720" valign="top" style="padding: 0cm 5.4pt; border-top: 1pt solid windowtext; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-left-color: rgb(0, 0, 0); width: 539.9pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><span style="color: rgb(255, 153, 0); font-size: 14px;">실행시간</span><font color="#000000"><span lang="EN-US" style="font-size: 14px;">&nbsp;: 전체</span><span style="font-size: 14px;">&nbsp;테스트 케이스를 합쳐서</span><span lang="EN-US" style="font-size: 14px;">&nbsp;C/C++</span><span style="font-size: 14px;">의 경우</span><span lang="EN-US" style="font-size: 14px;">&nbsp;1</span><span style="font-size: 14px;">초</span><span lang="EN-US" style="font-size: 14px;">, JAVA</span><span style="font-size: 14px;">의 경우</span><span lang="EN-US" style="font-size: 14px;">&nbsp;1</span><span style="font-size: 14px;">초, Python 2초</span><span lang="EN-US"><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><span style="color: rgb(255, 153, 0); font-size: 14px;">메 모 리&nbsp;</span><font color="#000000"><span lang="EN-US" style="font-size: 14px;">: Heap, Global, Stack&nbsp;</span><span style="font-size: 14px;">등을 모두 합해 최대</span><span lang="EN-US" style="font-size: 14px;">&nbsp;256MB</span><span style="font-size: 14px;">까지 사용 가능</span><span lang="EN-US" style="font-size: 14px;">&nbsp;(</span><span style="font-size: 14px;">단</span><span lang="EN-US" style="font-size: 14px;">,&nbsp;</span><span style="font-size: 14px;">스택은 최대</span><span lang="EN-US" style="font-size: 14px;">&nbsp;1MB</span><span style="font-size: 14px;">까지 사용 가능</span><span lang="EN-US"><span style="font-size: 14px;">)</span><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td></tr><tr><td width="111" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-left: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); width: 83.4pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><font color="#000000"><span style="font-size: 14px;">제출 횟수 제한</span><span lang="EN-US"><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td><td width="720" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); border-left-color: rgb(0, 0, 0); width: 539.9pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><span style="font-size: 14px;">제한 없음</span></p><font color="#000000" face="굴림" size="3"></font></td></tr><tr><td width="111" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-left: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); width: 83.4pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><font color="#000000"><span style="font-size: 14px;">채점</span><span lang="EN-US"><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td><td width="720" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); border-left-color: rgb(0, 0, 0); width: 539.9pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font color="#00b050" style="background-color: transparent;"><span style="font-weight: bolder; font-size: 14px;">Accept</span></font><span style="background-color: transparent; font-size: 14px;">&nbsp;: 정상적으로 제출되었다는 의미 (컴파일 에러 등 없다는 의미이며 점수는 공개하지 않음)</span><br></p><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><span lang="EN-US" style="color: red; font-size: 14px;">Fail</span><font color="#000000"><span lang="EN-US" style="font-size: 14px;">&nbsp;: 컴파일, 런타임 에러 등으로 0점</span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td></tr><tr><td width="111" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-left: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); width: 83.4pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><font color="#000000"><span style="font-size: 14px;">평가</span><span lang="EN-US"><o:p></o:p></span></font></font></font></p><font color="#000000" face="굴림" size="3"></font></td><td width="720" valign="top" style="padding: 0cm 5.4pt; border-right: 1pt solid windowtext; border-bottom: 1pt solid windowtext; border-top-color: rgb(0, 0, 0); border-left-color: rgb(0, 0, 0); width: 539.9pt; background-color: transparent;"><font color="#000000" face="굴림" size="3"></font><p class="MsoNormal" style="margin: 0cm 0cm 0pt;"><font size="2"><font face="맑은 고딕"><span style="font-weight: bolder;"><span lang="EN-US" style="color: rgb(85, 142, 213); font-size: 14px;">sample_input</span></span><span style="font-weight: bolder;"><span style="color: rgb(85, 142, 213);"><span style="font-size: 14px;">은 편의를 위해 제공하며</span><span lang="EN-US" style="font-size: 14px;">,&nbsp;</span><span style="font-size: 14px;">실제 채점은 별도의 평가용</span><span lang="EN-US" style="font-size: 14px;">&nbsp;input</span><span style="font-size: 14px;">으로 이루어진다</span><span lang="EN-US" style="font-size: 14px;">.</span></span></span></font></font></p><font color="#000000" face="굴림" size="3"></font></td></tr></tbody></table><p style="margin-bottom: 0px; font-size: 12.96px; color: rgb(33, 37, 41);"><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font><font face="굴림" size="3"></font></p><p class="MsoNormal" style="margin: 0cm 0cm 0pt; color: rgb(33, 37, 41); font-family: &quot;맑은 고딕&quot;; font-size: small;"><font face="굴림" size="3"></font><span style="font-size: 14px;">&nbsp;</span></p><div style=""><p class="MsoNormal" style="font-size: 12.96px;"><span lang="ko" style="font-size: 1rem;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">수열 A[1], A[2], …, A[N]이 주어진다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">이 수열에 다음 작업을 반복하면 몇 번째 만에 모든 값이 같아지는지 계산하라. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">모두 같아지는 것이 불가능한 경우 -1을 출력한다.</span></p><p class="MsoNormal" style=""><span style="font-size: 14px;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">작업: 수열의 K번째 원소를 제일 마지막에 추가하고, 수열의 첫 원소를 지운다.</span></p><p class="MsoNormal" style=""><span style="font-size: 12px;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">아래 첫 번째 입력으로 주어진 수열에서 작업을 진행하는 경우를 보자.</span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">수열은 {1, 5, 5, 3} -&gt; {5, 5, 3, 5} -&gt; {5, 3, 5, 5} -&gt; {3, 5, 5, 3} -&gt; {5, 5, 3, 5}와 같이 바뀌어 모두 같아지는 일 없이 반복된다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">따라서 이 경우의 답은 -1이다.</span></p><p class="MsoNormal" style=""><span style="font-size: 12px;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;"><b>[제약사항]</b></span></p><p class="MsoNormal" style=""><span style="font-size: 12px;"><span style="font-size: 14px;">1.</span><span style="white-space: pre; font-size: 14px;">	</span><span style="font-size: 14px;">N은 4 이상 500 이하이다. (4 ≤ N ≤ 500)</span></span></p><p class="MsoNormal" style=""><span style="font-size: 12px;"><span style="font-size: 14px;">2.</span><span style="white-space: pre; font-size: 14px;">	</span><span style="font-size: 14px;">수열의 원소는 1 이상 10 이하의 자연수이다.</span></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;"><b>[입력]</b></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">가장 첫 줄에는 테스트 케이스의 총 수가 주어진다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">그 다음 줄부터 각 테스트 케이스가 주어지며, 각 테스트 케이스는 2줄로 구성된다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">각 테스트 케이스의 첫 줄에는 N과 K의 값이 주어진다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">다음 줄에 수열의 원소들의 순서대로 주어진다.&nbsp;</span></p><p class="MsoNormal" style=""><span style="font-size: 12px;"><br></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;"><b>[출력]</b></span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">출력의 각 줄은 ‘#x’로 시작하고, 공백을 한 칸 두고 최소 작업 횟수 혹은 -1을 출력한다. </span></p><p class="MsoNormal" style=""><span style="font-size: 14px;">단, x는 테스트 케이스의 번호이다.</span></p><div style="font-size: 12.96px;"><br></div><span style="font-size: 12px;"></span><p class="MsoNormal" style="font-size: 12.96px;"><br></p><span style="font-size: 12px;"></span><p class="MsoNormal" style="font-size: 12.96px;"><span style="font-weight: bolder;"><span style="font-size: 14px;">[</span></span><span style="font-weight: bolder;"><span style="font-family: &quot;맑은 고딕&quot;; font-size: 14px;">입력</span><span style="font-size: 14px;">&nbsp;</span></span><span style="font-weight: bolder;"><span style="font-family: &quot;맑은 고딕&quot;; font-size: 14px;">예</span><span lang="ko"><span style="font-size: 14px;">]</span><o:p></o:p></span></span></p><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><table class="MsoTableGrid" border="1" cellspacing="0" cellpadding="0" style="font-size: 12.96px; border: none;"><tbody><tr><td width="615" valign="top" style="padding: 0cm 5.4pt; border-width: 1pt; border-style: solid; border-color: windowtext; width: 461.2pt;"><span style="font-size: 12px;"></span><p class="MsoNormal"><span style="font-size: 14px;">3&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // 테스트 케이스의 수</span></p><p class="MsoNormal"><span style="font-size: 14px;">4 2&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// N = 4, 테스트 케이스 #1</span></p><p class="MsoNormal"><span style="font-size: 14px;">1 5 5 3</span></p><p class="MsoNormal"><span style="font-size: 14px;">4 1&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// N = 4, 테스트 케이스 #2</span></p><p class="MsoNormal"><span style="font-size: 14px;">3 3 3 3</span></p><p class="MsoNormal"><span style="font-size: 14px;">4 3&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// N = 4, 테스트 케이스 #3</span></p><p class="MsoNormal"><span lang="ko" style="font-size: 14px;"></span></p><p class="MsoNormal"><span style="font-size: 14px;">2 3 4 4</span></p><span style="font-size: 12px;"></span></td></tr></tbody></table><span style="font-size: 12px;"></span><p class="MsoNormal" style="font-size: 12.96px;"><span lang="ko" style="font-size: 14px;">&nbsp;</span></p><span style="font-size: 12px;"></span><p class="MsoNormal" style="font-size: 12.96px;"><span style="font-weight: bolder;"><span style="font-size: 14px;">[</span></span><span style="font-weight: bolder;"><span style="font-family: &quot;맑은 고딕&quot;; font-size: 14px;">출력</span><span style="font-size: 14px;">&nbsp;</span></span><span style="font-weight: bolder;"><span style="font-family: &quot;맑은 고딕&quot;; font-size: 14px;">예</span><span lang="ko"><span style="font-size: 14px;">]</span><o:p></o:p></span></span></p><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><span style="font-size: 12px;"></span><table class="MsoTableGrid" border="1" cellspacing="0" cellpadding="0" style="font-size: 12.96px; border: none;"><tbody><tr><td width="615" valign="top" style="padding: 0cm 5.4pt; border-width: 1pt; border-style: solid; border-color: windowtext; width: 461.2pt;"><span style="font-size: 12px;"></span><p class="MsoNormal"><span lang="EN-US"><span style="font-size: 14px;">#1 -1</span></span></p><span style="font-size: 12px;"></span><p class="MsoNormal"><span lang="EN-US"><span style="font-size: 14px;">#2 0</span></span></p><span style="font-size: 12px;"></span><p class="MsoNormal"><span lang="EN-US"><span style="font-size: 14px;">#3 2</span></span></p><span style="font-size: 12px;"></span></td></tr></tbody></table><span style="font-size: 12px;"></span><p class="MsoNormal" style="font-size: 12.96px;"><span lang="ko" style="font-size: 14px;">&nbsp;</span></p><p class="MsoNormal" style="font-size: 12.96px;"><span lang="ko" style="font-size: 14px;">&nbsp;</span></p></div> 
+		</div>
+		<!-- //Tab1 문제보기 -->
+		<!-- Tab2 문제풀기 -->
+		<div class="content-wrap show" id="tab2">
+			<!-- Language  선택 -->
+			<div class="checks-wrap">
+				<span>Language 선택<!-- 선택 --> :</span>
+					
+						<div class="checks" id="langSelectorC">
+							<input type="radio" id="lang1" name="lang" value="C" onclick="selectCodeLang(&#39;C&#39;);"><label for="lang1">C (gcc-10.3)</label>
+						</div>
+						<input type="hidden" class="langCode" id="C" name="c" value="text/x-csrc">
+					
+						<div class="checks" id="langSelectorP">
+							<input type="radio" id="lang2" name="lang" value="P" onclick="selectCodeLang(&#39;P&#39;);"><label for="lang2">C++ (gcc-10.3)</label>
+						</div>
+						<input type="hidden" class="langCode" id="P" name="cpp" value="text/x-c++src">
+					
+						<div class="checks" id="langSelectorJ">
+							<input type="radio" id="lang3" name="lang" value="J" onclick="selectCodeLang(&#39;J&#39;);"><label for="lang3">JAVA (java-1.8.0_192)</label>
+						</div>
+						<input type="hidden" class="langCode" id="J" name="java" value="text/x-java">
+					
+						<div class="checks" id="langSelectorY">
+							<input type="radio" id="lang4" name="lang" value="Y" onclick="selectCodeLang(&#39;Y&#39;);"><label for="lang4">Python (PyPy-7.3.4)</label>
+						</div>
+						<input type="hidden" class="langCode" id="Y" name="py" value="text/x-python">
+									
+			</div>
+			<!-- //Language  선택 -->		
+			<div class="editbox">
+					
+				
+				<div class="webbox" id="webedit" style="visibility: visible;"><div><div class="codemirror-ui-clearfix codemirror-ui-button-frame"><span style="float: left;"><a id="Search" class="mirror_search_off"><p style="z-index: 10" class="hide">Search</p></a></span><span style="float: left;"><a id="Undo" class="mirror_pre"><p style="z-index: 10" class="hide">Undo</p></a></span><span style="float: left;"><a id="Redo" class="mirror_next"><p style="z-index: 10" class="hide">Redo</p></a></span><span style="float: left;"><a id="Fullscreen" class="mirror_full_off"><p style="z-index: 10" class="hide">Fullscreen</p></a></span><span style="float: left;"><a id="Jump to line #" class="mirror_all"><p style="z-index: 10" class="hide">Jump to line #</p></a></span><div class="codemirror-ui-popup-find-wrap"><div class="codemirror-ui-find-bar"><input class="filein" type="text" size="8"><input type="button" class="btnsearch" value="Find"><label title="Case Sensitive"><input type="checkbox" class="codemirror-ui-checkbox">A/a</label><label title="Regular Expressions"><input type="checkbox" class="codemirror-ui-checkbox">RegEx</label><input type="text" class="filein" size="8"><input type="button" class="btnsearch" value="Replace"><label title="Replace All"><input type="checkbox" class="codemirror-ui-checkbox">All</label></div></div></div></div></div>
+				<div class="edit edit-sub">
+					<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="loadInitCodeLang(); return false;" title="소스 코드 초기화" class="btn-code">소스 코드 초기화<!-- 소스 코드 초기화 --></a>		
+					<div class="edit_box" style="overflow: hidden;">
+						<textarea id="textSource" style="height: 500px; width: 100%; display: none;" name="textSource">#include &lt;iostream&gt;
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define ll long long
+
+int main(){
+    int t; cin &gt;&gt; t;
+    for(int i = 0; i &lt; t; i++){
+        int n,k; cin &gt;&gt; n &gt;&gt; k;
+        vector&lt;int&gt; arr(n);
+        set&lt;int&gt; st;
+        for(int i = 0; i &lt; n; i++){
+            cin &gt;&gt; arr[i];
+            st.insert(arr[i]);
+        }
+        int ans = 0;
+
+        if(st.size()==1){
+            cout &lt;&lt; "#" &lt;&lt; i+1 &lt;&lt; " " &lt;&lt; ans &lt;&lt; '\n';
+            continue; // go to next
+        }
+        
+        for(int t = 1; t &lt;= 4; t++){
+            int selected = arr[k-1];
+            for(int i = 1; i &lt; n; i++){
+                arr[i-1] = arr[i];
+            }
+            arr[n-1] = selected; // put it at the end
+
+            set&lt;int&gt; st;
+            for(int i = 0; i &lt; n; i++){
+                st.insert(arr[i]);
+            }
+            if(st.size()==1){
+                ans = t;
+                // cout &lt;&lt; "ANS IS : " &lt;&lt; ans &lt;&lt; '\n';
+                break;
+            }
+
+        }
+
+        // for(int i=0;i&lt;n;i++) cout &lt;&lt; arr[i] &lt;&lt; " ";
+        //cout &lt;&lt; '\n';
+
+        if(ans == 0) ans = -1;
+        cout &lt;&lt; "#" &lt;&lt; i+1 &lt;&lt; " " &lt;&lt; ans &lt;&lt; '\n';
+    }
+    return 0;
+}
+
+</textarea><div class="CodeMirror cm-s-eclipse CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 378.125px; left: 53.7422px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;" tabindex="0"></textarea></div><div class="CodeMirror-vscrollbar" tabindex="-1" cm-not-content="true" style="bottom: 0px; width: 18px; pointer-events: auto; display: block;"><div style="min-width: 1px; height: 1203px;"></div></div><div class="CodeMirror-hscrollbar" tabindex="-1" cm-not-content="true" style="height: 18px; pointer-events: none;"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: 0px; border-right-width: 30px; min-height: 1203px; min-width: 269.688px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>1</div></div><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>51</div></div></div><div class="CodeMirror-measure"><pre class="CodeMirror-line" role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 22.7422px; top: 1078.12px; height: 23.4375px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include &lt;iostream&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include &lt;bits/stdc++.h&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">using</span> <span class="cm-keyword">namespace</span> <span class="cm-def">std</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define ll long long</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-type">int</span> <span class="cm-def">main</span>(){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">    <span class="cm-type">int</span> <span class="cm-variable">t</span>; <span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">t</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">    <span class="cm-keyword">for</span>(<span class="cm-type">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">t</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>)<span class=" CodeMirror-matchingbracket">{</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-type">int</span> <span class="cm-variable">n</span>,<span class="cm-variable">k</span>; <span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">n</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">k</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-variable">vector</span><span class="cm-operator">&lt;</span><span class="cm-type">int</span><span class="cm-operator">&gt;</span> <span class="cm-variable">arr</span>(<span class="cm-variable">n</span>);</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-variable">set</span><span class="cm-operator">&lt;</span><span class="cm-type">int</span><span class="cm-operator">&gt;</span> <span class="cm-variable">st</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-keyword">for</span>(<span class="cm-type">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">n</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">arr</span>[<span class="cm-variable">i</span>];</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-variable">st</span>.<span class="cm-variable">insert</span>(<span class="cm-variable">arr</span>[<span class="cm-variable">i</span>]);</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-type">int</span> <span class="cm-variable">ans</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-keyword">if</span>(<span class="cm-variable">st</span>.<span class="cm-variable">size</span>()<span class="cm-operator">==</span><span class="cm-number">1</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">"#"</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">i</span><span class="cm-operator">+</span><span class="cm-number">1</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">" "</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">ans</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">'\n'</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-keyword">continue</span>; <span class="cm-comment">// go to next</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        </span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-keyword">for</span>(<span class="cm-type">int</span> <span class="cm-variable">t</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>; <span class="cm-variable">t</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">8</span>; <span class="cm-variable">t</span><span class="cm-operator">++</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-type">int</span> <span class="cm-variable">selected</span> <span class="cm-operator">=</span> <span class="cm-variable">arr</span>[<span class="cm-variable">k</span><span class="cm-operator">-</span><span class="cm-number">1</span>];</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-keyword">for</span>(<span class="cm-type">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">n</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">                <span class="cm-variable">arr</span>[<span class="cm-variable">i</span><span class="cm-operator">-</span><span class="cm-number">1</span>] <span class="cm-operator">=</span> <span class="cm-variable">arr</span>[<span class="cm-variable">i</span>];</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-variable">arr</span>[<span class="cm-variable">n</span><span class="cm-operator">-</span><span class="cm-number">1</span>] <span class="cm-operator">=</span> <span class="cm-variable">selected</span>; <span class="cm-comment">// put it at the end</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-variable">set</span><span class="cm-operator">&lt;</span><span class="cm-type">int</span><span class="cm-operator">&gt;</span> <span class="cm-variable">st</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-keyword">for</span>(<span class="cm-type">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">n</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">32</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">                <span class="cm-variable">st</span>.<span class="cm-variable">insert</span>(<span class="cm-variable">arr</span>[<span class="cm-variable">i</span>]);</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">33</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">34</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            <span class="cm-keyword">if</span>(<span class="cm-variable">st</span>.<span class="cm-variable">size</span>()<span class="cm-operator">==</span><span class="cm-number">1</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">35</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">                <span class="cm-variable">ans</span> <span class="cm-operator">=</span> <span class="cm-variable">t</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">36</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">                <span class="cm-comment">// cout &lt;&lt; "ANS IS : " &lt;&lt; ans &lt;&lt; '\n';</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">37</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">                <span class="cm-keyword">break</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">38</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">            }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">39</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">40</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        }</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">41</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">42</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-comment">// for(int i=0;i&lt;n;i++) cout &lt;&lt; arr[i] &lt;&lt; " ";</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">43</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-comment">//cout &lt;&lt; '\n';</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">44</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;" class=""><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">45</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-keyword">if</span>(<span class="cm-variable">ans</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>) <span class="cm-variable">ans</span> <span class="cm-operator">=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;</span></pre></div><div style="position: relative;" class=""><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">46</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">"#"</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">i</span><span class="cm-operator">+</span><span class="cm-number">1</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">" "</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">ans</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">'\n'</span>;</span></pre></div><div style="position: relative;" class="CodeMirror-activeline"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -30px; width: 30px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">47</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">    <span class=" CodeMirror-matchingbracket">}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">48</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">    <span class="cm-keyword">return</span> <span class="cm-number">0</span>;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">49</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">50</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div class="" style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">51</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative; display: none;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">        <span class="cm-type">int</span> <span class="cm-variable">n</span>,<span class="cm-variable">k</span>; <span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">n</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">k</span>;</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; border-bottom: 0px solid transparent; top: 1203px;"></div><div class="CodeMirror-gutters" style="height: 1233px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div>
+					</div>
+				</div>
+			</div>		
+
+			
+			<div class="paragraph-title">TEST</div>
+			<!-- Guide -->
+			<div class="guide-box">
+				<span class="title">Sample Input<!-- Sample Input --></span>
+				<div class="inner-box">
+					<div class="guide-text">
+						검정 중 제공되는 sample input은 문제 지문에 포함되어 있는 [입출력 예제]와 유사한 성격으로 단지 디버깅에 도움을 드리기 위해 제공하는 것입니다.<br>
+						Sample input을 실행시켜 통과한 test case의 개수와 최종 점수와는 상관관계가 매우 낮다는 점을 양해하시기 바랍니다.
+					</div>
+					<div class="guide-button-group">
+						<!-- <a href="#" onClick="downSampleInput();" class="btn btn-sm btn-white btn-ico ico-download" title="sample_input.txt Download"> -->
+						<a href="https://cert.ssafy.com/exam/contest/management/sampleInput/download/AZMkb42UAAsBAAa4" class="btn btn-sm btn-white btn-ico ico-download" title="sample_input.txt Download">sample_input.txt<!-- sample_input.txt --></a>
+						<!-- <a href="#" onClick="viewSampleInput();" class="btn btn-sm btn-white btn-ico ico-popup" title="sample_input pop-up">sample_input pop-up</a> -->
+					</div>
+				</div>
+			</div>
+			<!-- Guide -->
+			
+			<!-- sub-tab -->
+			<div class="sub-tab-wrap">
+				<ul>
+					<li title="Input" id="inputTab" data-tab="input" class="">Input<!-- Input --></li>
+					<li title="Output" id="outputTab" data-tab="output" class="on">Output<!-- Output --></li>
+				</ul>
+			</div>
+			<!-- //sub-tab -->
+			<!-- sub-tab-content -->
+			<div class="sub-tab-content">
+				<div class="sub-tab-btn">
+					<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="onReset(); return false;" class="btn btn-white" title="Clear">Clear<!-- Clear --></a>
+					<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" onclick="executeTest();" class="btn btn-violet-line" title="Run">Run<!-- Run --></a>
+				</div>
+				<textarea id="input" class="" placeholder="참고로 INPUT 값을 넣지 않으면 제공되는 Sample Input이 기본 INPUT으로 설정되어 실행됩니다."></textarea>
+
+				<ul id="output" class="output_wrap show" style="display:none;"><li class="message"><span class="message_ico">00:48:20</span><span class="text"> 실행이 완료되었습니다. 실행 시간 :  0.01091s </span></li><li class="print_msg"><span class="print_ico">00:48:20</span><span class="text"> #1&nbsp;-1<br>#2&nbsp;0<br>#3&nbsp;2<br>#4&nbsp;-1<br>#5&nbsp;0<br>#6&nbsp;2<br>#7&nbsp;0<br>#8&nbsp;4<br>#9&nbsp;3<br>#10&nbsp;1<br>#11&nbsp;2<br>#12&nbsp;-1<br>#13&nbsp;-1<br>#14&nbsp;-1<br>#15&nbsp;-1<br>#16&nbsp;0<br>#17&nbsp;-1<br>#18&nbsp;-1<br>#19&nbsp;-1<br>#20&nbsp;-1<br>#21&nbsp;3<br>#22&nbsp;-1<br>#23&nbsp;-1<br>#24&nbsp;-1<br>#25&nbsp;0<br>#26&nbsp;-1<br>#27&nbsp;-1<br>#28&nbsp;-1<br>#29&nbsp;-1<br>#30&nbsp;-1<br> </span></li><li class="message"><span class="message_ico">00:48:20</span><span class="text"> 실행을 시작합니다. </span></li><li class="message"><span class="message_ico">00:48:20</span><span class="text"> 성공적으로 컴파일 되었습니다. </span></li></ul>
+				
+			</div>
+			<!-- //sub-tab-content -->
+			
+		</div>
+		<!-- //Tab2 문제풀기 -->
+	</div>
+	<!-- 하단 버튼 -->
+	<div class="bottom-button-group">
+		<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-white" onclick="goContest();" title="문제목록">문제목록<!-- 문제목록보기 --></a>
+		<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-white mr-auto" onclick="problemPopup();" title="문제보기">문제보기<!-- 문제보기 --></a>
+		
+			
+			
+	   		
+	   				
+	   					
+					
+						<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-gray" onclick="executeSave();" title="검정 서버에 코드를 임시로 저장">임시저장<!-- 임시저장하기 --></a>
+						<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-gray" onclick="executeCompile();" title="검정 서버에서 코드를 컴파일">컴파일<!-- 컴파일하기 --></a>
+						<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-gray" onclick="focusRun();" title="검정 서버에서 코드를 실행하며 테스트하는 모드로 이동">TEST<!-- TEST하기 --></a>
+						<a href="https://cert.ssafy.com/exam/contest/management/problem?contestId=AZMz8B-ECiIBAAZN&amp;problemId=AZMkb42UAAsBAAa4&amp;problemNo=1&amp;goTab=contest#" class="btn btn-lg btn-primary" id="submitBtn" onclick="executeSubmitFirstStep();" title="코드를 서버에 제출 (제출 횟수를 1회 차감)">제출<!-- 제출하기 --></a>						
+					
+				
+			
+							   				
+	</div>
+	<!-- //하단 버튼 -->
+	
+
+
+
+
+
+
+
+
+
+
+<div class="footer"><img src="./SW Certificate System_files/login_footer.png">© 2019 SAMSUNG. </div>
+</div>
+	
+<!-- Modal : codeView  -->
+<div class="modal scs-modal fade" id="codeView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<!-- modal-header -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="">제출코드<!-- 코드보기 --></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<!-- //modal-header -->
+			<!-- modal-body -->
+			<div class="modal-body">
+				
+				<div class="submit-history">
+					<span class="exam-title">문제명<!-- 문제명 --> :<strong>동일값</strong></span>
+					<span>제출시간<!-- 제출시간 --> :<strong id="submitTimeForCodeView"></strong></span>
+					<span>상태<!-- 상태 --> :<strong id="submitStatusForCodeView"></strong></span>  <!-- [D] Pass 인 경우에는 css="color-red" 삭제 -->
+				</div>
+<!-- 				<div class="policy_wrap"> -->
+				<div id="lastCodeDiv">
+					<textarea style="height: 500px; width: 100%;" readonly="true">#include &lt;iostream&gt;
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define ll long long
+
+int main(){
+    int t; cin &gt;&gt; t;
+    for(int i = 0; i &lt; t; i++){
+        int n,k; cin &gt;&gt; n &gt;&gt; k;
+        vector&lt;int&gt; arr(n);
+        set&lt;int&gt; st;
+        for(int i = 0; i &lt; n; i++){
+            cin &gt;&gt; arr[i];
+            st.insert(arr[i]);
+        }
+        int ans = 0;
+
+        if(st.size()==1){
+            cout &lt;&lt; "#" &lt;&lt; i+1 &lt;&lt; " " &lt;&lt; ans &lt;&lt; '\n';
+            continue; // go to next
+        }
+        
+        for(int t = 1; t &lt;= 4; t++){
+            int selected = arr[k-1];
+            for(int i = 1; i &lt; n; i++){
+                arr[i-1] = arr[i];
+            }
+            arr[n-1] = selected; // put it at the end
+
+            set&lt;int&gt; st;
+            for(int i = 0; i &lt; n; i++){
+                st.insert(arr[i]);
+            }
+            if(st.size()==1){
+                ans = t;
+                // cout &lt;&lt; "ANS IS : " &lt;&lt; ans &lt;&lt; '\n';
+                break;
+            }
+
+        }
+
+        // for(int i=0;i&lt;n;i++) cout &lt;&lt; arr[i] &lt;&lt; " ";
+        //cout &lt;&lt; '\n';
+
+        if(ans == 0) ans = -1;
+        cout &lt;&lt; "#" &lt;&lt; i+1 &lt;&lt; " " &lt;&lt; ans &lt;&lt; '\n';
+    }
+    return 0;
+}
+
+</textarea>
+				</div>	
+				<div id="historyCodeDiv">
+				</div>	
+<!-- 				</div> -->
+			</div>
+			<!-- //modal-body -->
+		</div>
+	</div>
+</div>
+<!-- //Modal : codeView -->	
+
+<!-- Modal : sample Input  -->
+<div class="modal scs-modal fade" id="sampleInput" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<!-- modal-header -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="">Sample Input</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="닫기">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<!-- //modal-header -->
+			<!-- modal-body -->
+			<div class="modal-body">
+				
+				<div class="submit-history">
+					<span class="exam-title">문제명<!-- 문제명 --> :<strong>동일값</strong></span>				
+					<span>※ 정확한 Sample Input을 얻기 위해 아래 내용을  복사한 뒤, 메모장에 붙여넣어 사용하십시오.</span>
+				</div>
+<!-- 				<div class="policy_wrap"> -->
+					<textarea id="sampleInputView" style="height: 500px; width: 100%;" readonly="true"></textarea>
+<!-- 				</div> -->
+			</div>
+			<!-- //modal-body -->
+		</div>
+	</div>
+</div>
+<!-- //Modal : sample Input -->		
+
+<div id="hl-aria-live-message-container" aria-live="polite" class="visually-hidden"></div><div id="hl-aria-live-alert-container" role="alert" aria-live="assertive" class="visually-hidden"></div></body></html>

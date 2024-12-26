@@ -2,10 +2,16 @@ import project1 from "../assets/projects/toy_story_project.png";
 import project2 from "../assets/projects/step_stone_project.png";
 import project3 from "../assets/projects/word_mafia_project.jpeg";
 
-export const HERO_CONTENT = `I am a passionate backend & DevOps developer with a knack for crafting robust and scalable web applications. With 3 years of hands-on experience, I have honed my skills in back-end technologies like Java Springboot and FastAPI, as well as CI/CD technologies like Docker and Jenkins.\n Finally, I really enjoy competitive programming and solving problems using various algorithms`;
+export const HERO_CONTENT = `The Probst Family is one of the best family in the world.`;
 
 // About should be changed to award
-export const ABOUT_TEXT = "ICPC Rocky Mountain 2024 Regional– 9th(among 54 teams)\n\n ICPC Rocky Mountain 2023 Regional– 14th(among 46 teams)\n\n 2024 SKT Fly AI Hackathon– 3rd\n\n";
+export const ABOUT_TEXT = "The best father and cell biologist with extensive background in the modulation of metabolic, inflammatory and fibrotic pathways associated with rare human disease.";
+export const ABOUT_TEXT2 = "Best Mother";
+export const ABOUT_TEXT3 = "Reptile Expert a.k.a Snake Master";
+export const ABOUT_TEXT4 = "Brave Firefighter";
+export const ABOUT_TEXT5 = "Potato Song Singer";
+export const ABOUT_TEXT6= "King of fortnite";
+export const ABOUT_TEXT7 = "Greatest Chef Ever";
 
 export const EXPERIENCES = [
   {
